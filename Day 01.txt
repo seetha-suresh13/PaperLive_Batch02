@@ -1,0 +1,100 @@
+										DevOps - Day 01 - 22-0-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------
+Class Timings
+------------------------
+Monday, Tuesday, Thursday, Friday - 4 days ---- 2 hrs/day
+
+Wednesday - Mentor Session
+
+--------------------------------
+Course Modules
+--------------------------------
+1. Linux & Shell Scripting						- 8 hrs
+2. AWS Cloud (15+ services)						- 40 hrs
+3. Introduction to DevOps (or) DevOps Overview		- 2 hrs
+4. Git & GitHub 								- 8 hrs
+5. Maven										- 2-3 hrs
+6. Tomcat/Nginx/Apache Webservers				- 2 hrs
+7. Jenkins										- 10 hrs
+8. Docker										- 10 hrs
+9. Ansible									- 8 hrs
+10. Terraform									- 8 hrs
+11. Kubernetes								- 18 hrs
+12. Monitoring (ELK Stack, Prometheus, Grafana)	- 2 hrs
+13. Python									- 4 hrs
+
+
+10 real-time projects (Assignments)
+5 DevOps Projects + 3 AWS Projects (Sessions)
+
+AWS & DevOps Interview Questions
+
+LinkedIn Portfolio + Sample Resumes (3)
+
+3+ years
+
+Developer ----- DevOps Engineer
+
+Netflix --- How many servers? What should be the capacity? Networking?... --- Design the infrastructure
+
+Notes: https://github.com/KastroVKiran/PaperLive_Batch02.git
+========================================================================================================
+How to create AWS Account?
+-------------------------------------------
+Pre-requisites
+-----------------
+1. Valid email id and mobile number
+2. PAN Card Details
+3. Credit/Debit Card
+
+https://aws.amazon.com/
+
+AWS Account Creation Video: https://youtu.be/E3M2GA0A7nI
+
+Points to Remember
+-------------------------------
+1. Valid for 12 months
+2. Free-tier account*
+
+Note: Charged - 
+
+AWS Official Documentation: https://docs.aws.amazon.com/
+
+250+ services are available in AWS Cloud
+
+LinkedIn: https://www.linkedin.com/in/kastro-kiran/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
