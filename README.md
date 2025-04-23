@@ -5,7 +5,7 @@ Unlock the world of Cloud, Automation, and Infrastructure with real-world projec
 
 ---
 
-## 📘 Course Modules
+## 📚 Course Modules
 
 ### 1. ☁️ AWS Cloud (12+ Services)
 Get started with Amazon Web Services:
@@ -36,7 +36,7 @@ Get started with Amazon Web Services:
 
 ---
 
-### 5. 🌱 Git & GitHub
+### 5. 🌿 Git & GitHub
 - Version control using Git  
 - Branching, merging, rebasing  
 - GitHub collaboration, issues, PRs
@@ -50,7 +50,7 @@ Get started with Amazon Web Services:
 
 ---
 
-### 7. 🐱‍🏍 Apache Tomcat
+### 7. 🏗️ Apache Tomcat
 - Deploying Java applications  
 - Tomcat configuration on AWS  
 - Managing web apps via Tomcat Manager
@@ -64,14 +64,14 @@ Get started with Amazon Web Services:
 
 ---
 
-### 9. 🐋 Docker
+### 9. 🐳 Docker
 - Containerization fundamentals  
 - Building and running Docker containers  
 - Docker Compose & DockerHub usage
 
 ---
 
-### 10. 📦 Ansible
+### 10. 📜 Ansible
 - Configuration management  
 - Writing playbooks  
 - Managing multiple servers with ease
@@ -92,25 +92,24 @@ Get started with Amazon Web Services:
 
 ---
 
-### 13. 📊 Grafana & Prometheus
+### 13. 📈 Grafana & Prometheus
 - Real-time monitoring  
 - Metrics scraping with Prometheus  
 - Visualization with Grafana dashboards
 
 ---
 
-## 🌟 Highlights
+## ✨ Highlights
 
-- ✅ 10+ Real-Time Projects
-- ✅ 10+ In-Session Projects  
+- ✅ 10+ Real-Time Projects  
 - ✅ Interview Questions & Preparation  
 - ✅ Capstone Project Guidance  
-- ✅ LinkedIn Portfolio & Resume Assistance
+- ✅ Portfolio & Resume Assistance
 
 ---
 
 ## 💻 Getting Started
 
-Clone the repo and follow along:
 ```bash
-git clone https://github.com/KastroVKiran/PaperLive_Batch02.git
+git clone https://github.com/KastroVKiran/PaperLive_Batch01.git
+cd PaperLive_Batch01
