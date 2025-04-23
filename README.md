@@ -114,6 +114,5 @@ https://www.linkedin.com/in/kastro-kiran/
 
 ```bash
 git clone https://github.com/KastroVKiran/PaperLive_Batch01.git
-cd PaperLive_Batch01
 
 
