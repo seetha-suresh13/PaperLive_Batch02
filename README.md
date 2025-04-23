@@ -92,7 +92,7 @@ Get started with Amazon Web Services:
 
 ---
 
-### 13. 📈 Grafana & Prometheus
+### 13. 📊 Grafana & Prometheus
 - Real-time monitoring  
 - Metrics scraping with Prometheus  
 - Visualization with Grafana dashboards
@@ -113,3 +113,6 @@ Get started with Amazon Web Services:
 ```bash
 git clone https://github.com/KastroVKiran/PaperLive_Batch01.git
 cd PaperLive_Batch01
+
+## 👨‍💻 Connect with me on LinkedIn
+https://www.linkedin.com/in/kastro-kiran/
