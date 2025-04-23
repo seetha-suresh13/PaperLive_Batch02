@@ -1,0 +1,126 @@
+											DevOps - Day 02 - 23-04-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Linux 
+=======================================================================================================
+=> Why we need to learn Linux?
+Linux is 'something' which is commonly used in the real-time scenarios by software engineers.
+
+=> What is Linux?
+Linux is an Operating System
+
+=> What is OS?
+OS is a software which is used to interact with the machine (Laptop/Desktop/Mobile...)
+OS acts as a mediator between the user and the machine
+			OS
+	User ---------------> Machine
+OS is mandatory to use any machine/device
+OS provides an environment to run an application(s)
+
+=> Types of OS?
+Windows, Andriod, Mac, Linux...
+
+=> Windows Vs Linux
+Windows OS is a single user based OS
+Linux OS is a multi user based OS
+
+Windows OS is premium
+Linux OS is free and open-source 
+
+Windows OS doesn't have better security features
+Linux OS is fully secure
+
+Windows is developed and owned by Microsoft
+Linux is developed by Linus Torvalds
+
+Windows OS is GUI based
+Linux OS is CLI based
+
+=> Linux Distributions
+A Linux distributions are tailored for various use cases based on the requirements
+In AWS Cloud, most of the distributions are available as Amazon Machine Image (AMI)
+	1. RPM based (RedHat Package Manager)
+		- RedHat
+		- Cent OS
+		- Amazon Linux*
+	2. Debian based
+		- Suse
+		- Ubuntu*
+Note: We have 200+ Linux Distributions in the market
+
+=> How to work with Linux OS in AWS Cloud?
+
+AWS Cloud ----> EC2 (Elastic Compute Cloud) ----> We will launch Virtual Machines (VMs) ----> Based on the required OS and Configurations ----> Connect to the VM ----> Ready to use
+
+=> How to connect to the VM?
+AWS Cloud (EC2 Instance Connect, AWS Sessions Manager), MobaXTerm*, Putty & PuttyGen, VS Code Editor, Windows Power Shell
+
+=> How to launch EC2 Instance?
+Step 1: Name (Optional)
+Step 2: Selecting AMI - Amazon Linux 2
+Step 3: Instance type - t2.micro (Free tier)
+Step 4: Keypair - .pem (MobaXTerm), .ppk (Putty & Putty Gen)
+Step 5: Networking (Default)
+Step 6: Size (Free tier: 30 GB)
+Step 7: Selecting number of instances
+
+Note: 750 hours per month 
+1 instance --- 750 hrs
+2 instances --- 750/2 = 375 hrs per instance per month
+3 instance --- 750/3 = x hrs per instance per month
+
+Note: EC2 is a region specific service
+
+Note: Default username of Linux Instances ----> ec2-user
+Note: Default username of Ubuntu Instances ----> ubuntu
+
+=> How to connect to the EC2 instance?
+Step 1: Download and Install MobaXTerm in local system
+Step 2: Open MobaXTerm
+Step 3: Copy the Public IP Address of the instance
+Step 4: In MobaXTerm Console ----> Session (top right corner) ----> SSH ----> Remote Host: <PublicIPAddress> ----> 'Check' Specify username ----> Username: ec2-user ----> Advanced SSH Settings ----> 'Check' Use private key ----> Click on 'File' icon ----> Select the .pem file from your local system ----> OK
+
+SSH - Secure Socket Host / Secure Shell
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Linux Commands - Day 01
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+clear (or) control + l
+cal ----> Current month and current year
+cal <YearName>
+cal -3 ---> To see previous month, current month, and upcoming month
+cal <1-12> <Year> (or) cal <Month Name> <Year>
+date
+
+=> Types of users in Linux OS
+By default in Linux, we have 2 types of users;
+	1. ec2-user	- will have limited permissions (cannot install s/w) - default
+	2. root		- will have all privileges 
+
+whoami
+sudo su (or) sudo -i
+exit
+pwd (Present Working Directory)
+	- default path is /home/ec2-user/
+ls
+ls -l (or) ll
+In Linux OS, everything is considered as FILES
+
+How to create files in Linux OS?
+1. touch
+touch <FileName>
+touch <File1Name> <File2Name> <File3Name>
+touch <FileName>{StartingNumber..EndingNumber}.<FileExtension>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
