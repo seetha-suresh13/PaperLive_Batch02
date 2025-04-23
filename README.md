@@ -107,6 +107,8 @@ Get started with Amazon Web Services:
 - ✅ Portfolio & Resume Assistance
 
 ---
+## 👨‍💻 Connect with me on LinkedIn
+https://www.linkedin.com/in/kastro-kiran/
 
 ## 💻 Getting Started
 
@@ -114,5 +116,4 @@ Get started with Amazon Web Services:
 git clone https://github.com/KastroVKiran/PaperLive_Batch01.git
 cd PaperLive_Batch01
 
-## 👨‍💻 Connect with me on LinkedIn
-https://www.linkedin.com/in/kastro-kiran/
+
