@@ -1,0 +1,105 @@
+											DevOps - Day 03 - 28-04-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Linux 
+=======================================================================================================
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Linux Commands - Day 02
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+=> How to create files in Linux OS?
+	i) touch
+	ii) cat
+	iii) vi
+
+To delete everything available in the present working path ----> rm *
+To delete a specific file ----> rm <FileName>
+To delete multiple files ----> rm <File1Name> <File2Name>
+To delete a specific type of files ----> rm *.java (It will delete all .java files)
+
+touch <FileName> -----> An empty file(s) will get created
+
+To see the content inside a file ----> cat <FileName>
+To create a file and write the content inside the file using 'cat' command ----> cat > <FileName>
+	Note: If there is any existing content inside the file, it will be overwritten. Only the latest content will be available
+To preserve the old content and to write the latest content
+	cat >> <FileName>
+
+vi is also used to create and write the content inside a file
+	1. Create a file ----> vi <FileName>
+	2. Go to the insert mode ----> press 'i'
+	3. Write the content required
+	4. Press 'esc'
+	5. :wq (OR) :wq! (w-write, q-quit)
+	6. :w (To just save the file)
+	7. :q! (To directly quit from the file without saving)
+
+
+Note: rm *
+	rm -f *
+	rm -rf *
+
+In Linux OS we can create directories (Folders)
+mkdir <Dir.Name>
+
+To go inside a directory
+cd <Dir.Name> ---> To go inside a directory
+cd .. ---> To go back to previous directory
+cd ../../../..
+
+----------------------------------
+Linux Directory Structure
+----------------------------------
+/home/ec2-user/ ----> Default path
+
+/bin ----> Binaries ----> Essentials which are ready-to-run a program
+/boot ----> Static files of boot loader
+/dev ----> device files
+/lib ----> Shared libraries
+/etc ----> host specific configurations
+/opt ----> Optional application software packages
+/tmp ----> temporary files will be stored here
+/usr ---> user utilities and applications
+/mnt ----> Mounted file system
+/media ----> Removal media
+
+
+To see the default directory structure
+cd /
+ls
+cd /<DirectoryName>
+ls
+
+To check which OS and flavor
+cat /etc/os-release
+
+
+
+To create a file with date in an automated way
+To know the list of files created on a specific date
+To recover a deleted file
+To secure a file
+
+If you see $ at the end of a line, it represents we are NORMAL USER
+If you see # at the end of a line, it represents we are ROOT USER
+If you see ~ at the end of a line inside [ ], it represents we are in home directory
+
+To know about a particular command
+man <Command>
+
+To know in which path the commands are available in Linux directory
+which <Command>
+
+To know the VM name
+hostname
+
+To see the hidden folders/files
+ls -a (or) ls -al
+
+FIND
+This is used when we dont know in which path we have created a file
+find /home/ec2-user/ -name <File/Directory Name>
+find -name <File/Directory Name>
+
+
+
+
+
