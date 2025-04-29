@@ -1,0 +1,229 @@
+											DevOps - Day 04 - 29-04-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Linux 
+=======================================================================================================
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Linux Commands - Day 03
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+MOVE 
+To rename a file or a directory
+To move files/directories from one location to another location
+
+To print the content of a file with line numbers
+cat -n <FileName>
+
+Note: If we want to copy the content from multiple files at then same time;
+cat <File1Name> <File2Name> > <File3Name> 
+
+COPY
+To copy the content from one file to another file
+cp <File1Name> <File2Name>
+Note: If File2 is not available, cp command will first create  the file and then it will copy the content
+
+To copy the files from one directory to another directory
+cp -r <Dir1Name>/ <Dir2Name>/
+
+Word Count
+To know the word count of a file
+wc <FileName>
+
+Ex: 3  17 102 kastro1.py
+3 -- Number of lines
+17 -- Number of words
+102 -- Number of characters
+
+To see the number of lines available in a file
+:set number
+
+How to go to a specific line
+:<LineNumber>
+
+To copy a specific line
+yy
+
+To paste the copied line
+p
+
+To delete a line
+dd
+
+How to undo
+u
+
+How to redo
+control+r
+
+How to delete a specific number of lines at a time
+<No of line you want to delete>dd
+Note: It is based on cursor position
+
+How to copy and paste specific number of lines at a time
+<No of line you want to copy>pp
+
+To delete everything available inside a file
+:%d
+
+GREP Command
+Global Regular Expression Print
+It is used to search for a word
+GREP will process the text line by line and prints the lines which contains the word
+
+grep '<WordName>' <FileName>
+
+To ignore the case sensitivity 
+grep -i '<WordName>' <FileName>
+
+To search for a word in all the files at a time
+grep -i '<WordName>' *
+
+To print along with line numbers
+grep -n '<WordName>' <FileName>
+
+To print the lines which doesn't contains a specific word
+grep -v '<WordName>' <FileName>
+
+------------------------------------------------------------------------
+How to transfer files from windows OS to Linux OS?
+------------------------------------------------------------------------
+WinSCP is a tool which is used to transfer files from Windows OS to Linux OS
+
+Note: The ec2 instance must be launched with .ppk file
+
+
+Note: We can also transfer the files from Linux OS to Windows OS (by using drag and drop option)
+
+
+-------------------------------------
+File Permissions in Linux OS
+-------------------------------------
+For any file/directory in Linux OS, we have 3 permissions
+	r - read
+	w - write
+	x - execute
+
+Every file/directory will have 9 characters
+These 9 characters are equally divided into 3 categories
+	1. user (u)
+	2. group (g)	
+	3. others (o)
+
+rwx	rwx	r-x
+
+For users ----> read, write, execute
+For groups ----> read, write, execute
+For others ----> read, execute
+
+How to edit the file permissions?
+chmod
+
+rw-	rw-	r-- -----> kastro1.py
+For users ----> read, write
+For groups ----> read, write
+For others ----> read
+
+Adding execute permission for users
+	chmod u+x Kastro1.py
+
+Adding execute permission for group
+	chmod g+x Kastro1.py
+
+Adding write and execute permissions for others
+	chmod o+wx Kastro1.py
+
+Remove
+chmod u-r
+
+File permissions using numbers
+0 - no permissions
+1 - execute
+2 - write
+3 - 2+1 => Write + Execute
+4 - read
+5 - 4 + 1 => Read + Execute
+6 - 4 + 2 => Read + Write
+7 - 6 + 1 => Read +Write + Execute
+
+--------------------------
+Users in Linux OS
+--------------------------
+Default users in Linux OS;
+	1. ec2-user
+	2. root
+
+To create custom users
+sudo useradd <UserName>
+
+To verify the user
+id <UserName>
+
+Switching to custom user
+sudo su <UserName> 
+
+To remove a custom user (It will not delete permanently)
+sudo userdel <UserName>
+
+To see the list of users created
+/home ----> ls -l (or) ll
+
+To remove the user permanently use -r command
+sudo userdel -r <UserName>
+
+To create a group
+sudo groupadd <GroupName>
+
+To see the list of groups created
+cat /etc/group
+
+Note: Whenever we create an user, automatically a group will get created with the same name
+Note: Whenever we create a group, an user will not get created
+
+-----------------------------------------------
+To get the logs of deleted users
+-----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
