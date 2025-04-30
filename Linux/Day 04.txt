@@ -82,15 +82,42 @@ grep -n '<WordName>' <FileName>
 To print the lines which doesn't contains a specific word
 grep -v '<WordName>' <FileName>
 
-------------------------------------------------------------------------
-How to transfer files from windows OS to Linux OS?
-------------------------------------------------------------------------
-WinSCP is a tool which is used to transfer files from Windows OS to Linux OS
+-------------------------------------------------------------------------
+WinSCP Setup - Transferring Files From Windows to Linux
+-------------------------------------------------------------------------
+Here we will use .ppk file. Launch an instance with .ppk file
 
-Note: The ec2 instance must be launched with .ppk file
+WinSCP is a tool that is used to transfer files from Windows to Linux
+
+Download WinSCP to laptop: https://winscp.net/eng/download.php#google_vignette
+Install WinSCP
+
+In VM make sure you are in /home/ec2-user ---> create one empty file in this path
+
+Open WinSCP in laptop ----> In the login window, File Protocol: SFTP ----> Click on 'Close' ----> You will see 2 windows. In both windows you will see the "downloads" folder (by default)
+
+In the top bar (left side) ----> NewTab ----> File Protocol: SFTP ----> Host Name: Public IP of VM, Port No. 22, Username: ec2-user ----> Click on 'Advanced' ----> SSH (leftpane) ----> Authentication (leftpane) ----> Under the 'Private key file' click on ... (3 dots) and select the ppk file ----> OK ----> Login ----> Accept
+On the left side you will see windows and on the right side you will see VM connected tab with path as /home/ec2-user.
+In the left side pane, select any path (Ex: Downloads folder) and select a file and drag and drop that file to the right side window i.e your VM tab.
+
+Goto Moba and execute ls ----> Whatever file you have dragged and dropped the same file you will see here. This is the easiest way to copy the files from Windows to Linux
+
+--------------------------------------------------------------------------------------
+SCP command - Transfer Files From Linux VM to Another Linux VM 
+--------------------------------------------------------------------------------------
+SCP - Secure Copy Protocol, is a command line tool used for securely transferring files between local and a remote host or between 2 remote hosts using SSH for Encryption and authentication
+
+Launch 2 VMs of Amazon Linux 2 AMI, t2.micro. Use same keypair for both VMs
+Connect to both VMs
+
+VM1 Tab of Moba ----> Create 5 files ----> To copy the files we will use SCP, for that first we need to create .pem file in VM1 ----> vi <PEMFileNameUsedToLaunchVM1>.pem ----> Paste the content from pem file which was used to launch VM1 ----> esc ----> :wq ----> sudo chmod 400 <PEMFileNameUsedToLaunchVM1>.pem ----> Lets establish a connection ----> scp -i <PEMFileName>.pem <FileNameYouWantToCopy>  ec2-user@<PrivateIPofVM2>:/home/ec2-user/ ----> [Here ec2-user is the username of VM2] ----> yes
+
+To verify, connect to VM2 and do 'ls' ----> You will see the file
+
+Note: Instead of file, you can give directory name also (Ex: Kastro/). Command to copy directory is as below;
+scp -r -i <PEMFileName>.pem <DirectoryNameYouWantToCopy>/*  ec2-user@<PrivateIPofVM2>:/home/ec2-user/
 
 
-Note: We can also transfer the files from Linux OS to Windows OS (by using drag and drop option)
 
 
 -------------------------------------
