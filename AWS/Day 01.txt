@@ -1,0 +1,103 @@
+											AWS - Day 01 - 01-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+AWS Cloud
+
+Duration: 18-20 days (36-40 hrs)
+
+AWS Services
+	1. S3
+	2. EC2
+	3. Cloud Watch
+	4. VPC
+	5. IAM
+	6. RDS
+	7. Route 53
+	8. EBS, ELB
+
+Total services ---- 20+ services
+	
+Project 1
+Project 2
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SHELL SCRIPTING
+---------------------------------------
+10.00 AM ---- set of commands ---- sudo su, sudo yum update -y, pwd, whoami, date, cal, history --- shell file ---- execute shell file
+
+5 lectures ---> YouTube ---> Assignment ----> Complete
+
+GitHub Link: https://github.com/KastroVKiran/ShellScriptingforDevOpsEngineering.git
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Introduction to Cloud Computing
+2. Why companies are switching to cloud
+3. AWS Certifications
+
+
+Before the Cloud Computing - Scenario
+
+Person 1 - XYZ - Hyderabad	- Netflix	- Code
+Person 2 - XYZ - Mumbai	- Netflix
+Person 3 - XYZ - Chennai	- Netflix
+Person 4 - XYZ - Bangalore	- Netflix
+Person 5 - XYZ - Pune		- Netflix
+
+P1 ------>  Pendrive/Harddisk, Mail, Google Drive
+
+Pendrive - Data -----> Complex, Data corruption, Data security 
+Mail		- Data ----> 25 MB (Data limitation), 50% of security 
+Google Drive - Data ----> 25 GB (Data limitation), 50% of security 
+
+Netflix - Production Environment ---- 
+	Day 1 ---- 10 servers (100 people) 
+	Day 2 ---- 20 servers (200 people)
+	Day 3 ---- 100 servers (1000 people) -----> 5000 Rs./Year
+	Day 4 ---- 50 servers (500 people)
+
+Physical Servers ---- Manual maintenance is required, Cost, Manual increase/decrease of servers based on the requests
+
+Cloud Computing -----> 
+Cloud Service Providers ----> AWS, GCP, Microsoft Azure, Alibaba, Salesforce, VM Ware....
+
+AWS Cloud - Amazon Web Services
+
+What is meant by Cloud Computing?
+Anything that you share using internet as a medium is known as Cloud Computing
+Cloud = Internet
+Computing = Compute
+
+Additional Notes on Global Infrastructure
+https://aws.amazon.com/about-aws/global-infrastructure/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
