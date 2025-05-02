@@ -1,0 +1,111 @@
+											AWS - Day 02 - 02-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+For every region in AWS will have an unique region code
+Mumbai - ap-south-1
+	AZ1	- ap-south-1a
+	AZ2	- ap-south-1b
+	AZ3	- ap-south-1c
+
+N.Virginia - us-east-1
+	AZ1 - us-east-1a
+	AZ2 - us-east-1b
+	AZ3 - us-east-1c
+	AZ4 - us-east-1d
+	AZ5 - us-east-1e
+	AZ6 - us-east-1f
+
+S3 Service
+
+In AWS we have services which are REGION SPECIFIC and GLOBAL
+S3 is a global service
+
+Simple Storage Service
+S3 is used to store data in the AWS Cloud
+S3 is a storage related service in AWS Cloud
+S3 is the second service released under AWS - 2006, March 14
+
+SQS is the first service launched by AWS - 2004
+SQS - Simple Queue Service
+
+=> Features of S3 Service
+In S3 there is no storage limit
+We can upload from 0 bytes to PB - Charges are applicable - Scalability
+
+Region - AZ Concept
+Mumbai ---- AZ1		AZ2		AZ3
+10 MB ---- The files will get store in all the 3 AZs - Availability
+
+To access the data internet is mandatory - Accessibility 
+
+Latency
+	High latency	- Data transfer is slow	- HDD
+	Low latency	- Data transfer is fast	- SSD
+AWS S3 is SSD disk type
+
+=> S3 Free-tier features
+5GB of storage will be given by AWS in S3
+
+In S3 service we can create BUCKETS (Folders)
+Inside BUCKETS we can upload OBJECTS (Files)
+For every object that we upload in a Bucket, will have an Object URL
+By using the Object URL, we can access the object
+By default, whenever we upload any object in S3 bucket, the object will be in PRIVATE mode
+A maximum of 5TB can be stored in each bucket
+A maximum of 100 buckets can be created for each AWS Account
+
+A Bucket can be created using S3 Console, CLI, SDK, API
+For every bucket and object, there will be a bucket owner and object owner
+
+In S3, we can create 2 types of buckets;
+	1. General purpose buckets			- Commonly used in real-time scenarios
+	2. Directory buckets				- These are preferred based on Storage Classes
+
+Tasks;
+Create a Bucket
+Upload an object
+Verify the object is public/private
+Making the object public
+	Enable ACL - object
+	Block public access - bucket
+	Make public using ACL - object
+
+Static Website Hosting in S3 Bucket
+Types of websites;
+	1. Static website		- which doesn't change based on location/user.... THE HINDU Newspaper
+	2. Dynamic website		- which changes based on location/user.... INSTAGRAM 
+
+https://static-websote-hsoting-02may2025.s3.us-east-1.amazonaws.com/index.html
+
+http://static-websote-hsoting-02may2025.s3-website-us-east-1.amazonaws.com
+
+Route 53 --- http://static-websote-hsoting-02may2025.s3-website-us-east-1.amazonaws.com ---- www.kastro.com
+
+S3 Replication Setup
+
+
+Storage Class Concept Video Link: https://youtu.be/TvkyDfJrh6A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
