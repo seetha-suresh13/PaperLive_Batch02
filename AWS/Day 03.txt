@@ -1,0 +1,71 @@
+											AWS - Day 03 - 05-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. S3 Versioning - Theory & Demo
+2. How to recover the deleted objects
+3. Life cycle management - Theory & Demo
+4. How to copy the objects between the buckets - Datasync
+5. S3 Requester Pays
+6. S3 Access Points - Theory & Demo (Assignment)
+
+First time ----> kastro.txt ----> AWS ----> May 5, 2025, 20:44:19 ---- This is overwritten/deleted
+Second time ----> kastro.txt ----> AWS ----> May 5, 2025, 20:45:46 - NULL
+Third time ----> kastro.txt ----> Microsoft Azure ----> May 5, 2025, 20:48:36 --- Deleted
+Fourth time ----> kastro.txt ----> GCP ----> May 5, 2025, 20:51:25 --- Deleted
+Fifth time ----> kastro.txt ----> Kastro ----> May 5, 2025, 20:59:19 --- Versioning was suspended
+
+3. Life cycle management - Theory & Demo
+Client ----> Website ---->  1000s of files on daily basis ----> Store ----> S3 ----> Stores the files ----> Standard ----> 10 Rs/file
+Customization of storage classes
+Client ----> Website ---->  1000s of files on daily basis ----> 3 months (wants to access the files on daily basis) ----> 3 months (may or maynot be used) ----> 6 months (not used frequently but whenever they need files, files should be accessible) ----> 12 months (files should be there but they may not need immediate access. Whenever there is a requirement we will let you know atleast 7 days before) ---> 24 months (files should be deleted)
+3 months - standard (10rs)
+3 months - intelligent tier (FA - 10 rs, IFA - 6rs) = 8 rs
+6 months - standard IA
+12 months - glacier deep archival
+
+1 100 MB file - 10 rs/file/month
+1st 3 months ---- 3 x 10 = 30
+2nd 3 months ---- 3 x 10 = 30
+3rd 6 months ---- 6 x 10 = 60
+4th 12 months ---- 12 x 10 = 120
+----------------------------------------------------
+				240 rs/file
+----------------------------------------------------
+
+1 100 MB file - 10 rs/file/month
+1st 3 months ---- 3 x 10 = 30
+2nd 3 months ---- 3 x 8 = 24
+3rd 6 months ---- 6 x 6 = 36
+4th 12 months ---- 12 x 2 = 24
+----------------------------------------------------
+				114 rs/file
+----------------------------------------------------
+
+manual configuration of these files from one storage class to another storage is a complex task
+To automate, we will use Life Cycle Management concept
+
+LCM consists of two types of policies
+	1. Transition policy
+	2. Expiration policy
+
+Note: While transition the objects, transition is possible from top to bottom
+
+
+Requester Pays
+Bucket - AWS Account 1 ----> 10 objects -- XYZ Company
+Bucket - AWS Account 2 ----> 10 objects -- ABC Company
+
+
+6. S3 Access Points - Theory & Demo (Assignment)
+Video Link: https://youtu.be/nSZ13PG_Oe8
+
+
+
+
+
+
+
+
+
+
