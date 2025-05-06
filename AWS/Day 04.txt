@@ -1,0 +1,196 @@
+											AWS - Day 04 - 06-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. S3 Security & Bucket Policy
+2. Working with CLI
+3. S3 Transfer Acceleration
+4. S3 Inventory Configurations
+5. S3 Server Access Logging
+6. S3 Multipart Upload
+6. S3 Event Notifications (related to SNS & Eventbridge) - Pending
+7. S3 KMS - Pending
+8. S3 Object Lock (Assignment)
+
+
+Bucket Policy
+--------------------------
+AWS Account 1 --- Bucket 1
+AWS Account 2 --- Bucket 2
+
+To share the data at account level, we will work with Bucket Policy
+
+Bucket policy is available in JSON (JavaScript Object Notation) format
+
+{
+	"version:"
+	"statement:"
+		[ {
+			"Effect:"
+			"Action:"
+			"Principal:"
+			"Resource:"
+		} ]
+
+}
+
+Effect: Allow/Deny
+Action: upload data, download data, delete data....
+Principal: To whom we are giving the access (IAM User/Root User/Public Access)
+Resource: "BucketName/*"
+
+2. Working with CLI
+Pre-requisites
+	1. Install AWS CLI
+	2. Create IAM User
+	3. Generate Access and Secret Keys
+	4. Configure AWS in Terminal/Command Prompt
+	5. Execute the commands
+
+
+CLI Commands
+--------------------------------------------------
+1. AWS S3 Commands
+--------------------------------------------------
+# List all buckets  
+aws s3 ls  
+
+# Create a bucket  
+aws s3 mb s3://bucket-name  
+
+# Delete a bucket (must be empty)  
+aws s3 rb s3://bucket-name  
+
+# Force delete a non-empty bucket  
+aws s3 rb s3://bucket-name --force  
+
+# Upload a file  
+aws s3 cp file.txt s3://bucket-name/  
+
+# Download a file  
+aws s3 cp s3://bucket-name/file.txt .  
+
+# Sync local directory to S3  
+aws s3 sync ./local-folder s3://bucket-name/  
+
+# Delete a file  
+aws s3 rm s3://bucket-name/file.txt  
+
+# List files in a bucket  
+aws s3 ls s3://bucket-name/ 
+ 
+--------------------------------------------------
+2. AWS EC2 Commands
+--------------------------------------------------
+# List all EC2 instances  
+aws ec2 describe-instances  
+
+# Start an instance  
+aws ec2 start-instances --instance-ids i-1234567890  
+
+# Stop an instance  
+aws ec2 stop-instances --instance-ids i-1234567890  
+
+# Terminate an instance  
+aws ec2 terminate-instances --instance-ids i-1234567890  
+
+# Create an instance (using launch template)  
+aws ec2 run-instances --launch-template LaunchTemplateId=lt-1234567890  
+
+# List AMIs  
+aws ec2 describe-images --owners self  
+
+# Create an AMI from an instance  
+aws ec2 create-image --instance-id i-1234567890 --name "My-AMI"  
+
+# Delete an AMI  
+aws ec2 deregister-image --image-id ami-1234567890  
+
+# List security groups  
+aws ec2 describe-security-groups  
+
+# Create a key pair  
+aws ec2 create-key-pair --key-name MyKeyPair  
+
+# Delete a key pair  
+aws ec2 delete-key-pair --key-name MyKeyPair  
+
+--------------------------------------------------
+3. AWS VPC Commands
+--------------------------------------------------
+# List all VPCs  
+aws ec2 describe-vpcs  
+
+# Create a VPC  
+aws ec2 create-vpc --cidr-block 10.0.0.0/16  
+
+# Delete a VPC  
+aws ec2 delete-vpc --vpc-id vpc-1234567890  
+
+# List subnets  
+aws ec2 describe-subnets  
+
+# Create a subnet  
+aws ec2 create-subnet --vpc-id vpc-1234567890 --cidr-block 10.0.1.0/24  
+
+# List route tables  
+aws ec2 describe-route-tables  
+
+# Attach an Internet Gateway  
+aws ec2 attach-internet-gateway --vpc-id vpc-1234567890 --internet-gateway-id igw-1234567890  
+
+# Create a NAT Gateway  
+aws ec2 create-nat-gateway --subnet-id subnet-1234567890 --allocation-id eipalloc-1234567890  
+
+--------------------------------------------------
+4. AWS IAM Commands
+--------------------------------------------------
+# List all IAM users  
+aws iam list-users  
+
+# Create a user  
+aws iam create-user --user-name MyUser  
+
+# Delete a user  
+aws iam delete-user --user-name MyUser  
+
+# List all policies  
+aws iam list-policies  
+
+# Attach a policy to a user  
+aws iam attach-user-policy --user-name MyUser --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess  
+
+# Create a role  
+aws iam create-role --role-name MyRole --assume-role-policy-document file://trust-policy.json  
+
+# Create access key for a user  
+aws iam create-access-key --user-name MyUser  
+
+# List access keys  
+aws iam list-access-keys --user-name MyUser  
+
+# Delete an access key  
+aws iam delete-access-key --user-name MyUser --access-key-id AKIA1234567890  
+
+3. S3 Transfer Acceleration
+10 GB ----> 10 Minutes
+Enable Transfer Acceleration
+10 GB ----> <=5 Minutes
+Additional charges are applicable
+
+4. S3 Inventory Configurations
+
+5. S3 Server Access Logging
+By using SAL, we can track our bucket
+The SAL data can be stored in another bucket or in same bucket
+The bucket which consists of log data is known as Log Bucket
+
+iam-user-bucket-06-05-2025 - Bucket 1
+s3-security-06-05-2025 - Bucket 2 (Log Bucket)
+
+6. S3 Multipart Upload
+
+AWS suggest to enable multipart upload when we are uploading files which are >= 100 MB
+Multipart upload can be done only using CLI/SDK/API
+
+7. S3 Object Lock (Video Link): https://www.youtube.com/watch?v=6WCFSojNMKE&list=PLs-PsDpuAuTdOcZa-DDgG8KRbtMI_XRrC&index=11&t=21s&pp=gAQBiAQB
