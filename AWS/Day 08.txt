@@ -1,0 +1,93 @@
+											AWS - Day 08 - 13-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. Deep Dive into Load Balancer Concept (OSI Model)
+2. Load Balancer, Auto Scaling, Launch Template, Target Groups - Demo 1, Demo 2, Demo 3
+3. Enabling sticky sessions
+4. EC2 Placement Groups - PENDING
+5. Simple Notification Service (SNS)
+6. AWS Organizations
+7. Monitor CPU Utilization using Cloud Watch - PENDING
+8. How to SSH from one instance to another instance - PENDING
+
+---------------------------------------------------------------------------
+1. Deep Dive into Load Balancer Concept (OSI Model)
+---------------------------------------------------------------------------
+OSI - Open Systems Interconnect - Created by ISO
+Why this is created?
+If i want to connect or shared data from one VM to another VM, we need to follow OSI model.
+7 steps/layers
+
+Kastro (7th layer to 1st layer) ------> Vaishnu (1st layer to 7th layer)
+
+7. Application layer		----> http & https protocol, file transfer protocol
+6. Presentation layer	----> Encryption & Decryption
+5. Session layer		----> login sessions
+4. Transport layer		----> LAN, WiFi (TCP & UDP)
+3. Network layer		----> IPv4, IPv6
+2. Data link layer		----> mac addresses 
+1. Physical layer
+
+ELBs - 4 types
+1. ALB
+2. NLB
+3. GLB
+4. CLB
+
+ELB service was launched in 2009 	---- CLB (Application layer & Transport layer)
+Version 2 2016
+Version 2 New Gen 2017
+2016 - ALB
+2017 - NLB - Transport layer
+2019 - GLB - Transport layer & Network layer
+
+2. LB - Demo 1
+How Load Balancer will work?
+
+3. LB - Demo 2
+Launch Template + ASG + LB
+
+4. LB - Demo 3
+Configuring CPU utilization metric
+LT + ASG + TG + Scaling Policies + Increase the load on instance + New instance should be launched
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+User data
+---------------
+
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+usermod -a -G apache ec2-user
+chown -R ec2-user:apache /var/www
+chmod 2775 /var/www
+echo "Hi Kastro from $(hostname)" > /var/www/html/index.html
+
+Commands to increase load on Instance:
+-------------------------------------------------
+Amazon Linux 2 AMI
+---------------------------------
+sudo amazon-linux-extras install epel -y
+sudo yum install stress -y
+stress --cpu 8
+
+
+
