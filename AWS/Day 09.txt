@@ -1,0 +1,77 @@
+											AWS - Day 09 - 15-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. EC2 Placement Groups
+2. Simple Notification Service (SNS)
+3. AWS Organizations
+4. How to SSH from one instance to another instance
+5. IAM - PENDING
+6. Monitor CPU Utilization using CloudWatch
+
+-------------------------------------------------
+1. EC2 Placement Groups
+-------------------------------------------------
+Placement groups are logical groupings or clusters of VMs in the selected region.
+	Mumbai - 10 VMs
+				3 VMs - Dev Team
+				3 VMs - Testing Team
+				4 VMs - DevOps
+Placement groups are used to define EC2 instance placement strategy.
+
+Placement group strategies;
+	1. Cluster	- Cluster the instances to low latency group in a single AZ
+	2. Spread	- It places a small group of instances across distinct underlying hardware resources
+	3. Partition	- It spreads the instance across many different partitions within the same AZ
+
+Cluster
+	- Low latency, Good networking (Min of 10 GBPS)
+	- If server rack fails all instances will be lost
+	- Apps which need higher bandwidth, low latency & high response rate
+
+
+Spread
+	- Can span across multiple AZs, low risk of failure
+	- Limited to 7 instances only per AZ
+	- Apps which need HA
+
+Partition
+	- 7 partitions in single AZ, upto 100 VMs
+	- High end processing
+
+-----------------------------------------------------
+2. Simple Notification Service (SNS)
+-----------------------------------------------------
+
+
+
+--------------------------------------------
+3. AWS Organizations
+--------------------------------------------
+It is a service in AWS which is used to create multiple AWS accounts using root account
+FREE
+Maximum of 10 accounts from one root account
+
+Manager ----> Testing, Dev, DevOps Departments
+					Testing (5) - Team Lead ---- AWS Account Full Access --- IAM Users
+					Dev (4) - Team Lead ---- AWS Account Full Access --- IAM Users
+					DevOps (6) - Team Lead ---- AWS Account Full Access --- IAM Users 
+
+
+--------------------------------------------------------------------------------
+4. How to SSH from one instance to another instance
+--------------------------------------------------------------------------------
+Instance 1 (public ip is enabled) (Bastion Host/Jump Server) -----> Instance 2 (public ip is disabled) (Private Server)
+
+
+
+
+------------------------------------------------------------------
+6. Monitor CPU Utilization using CloudWatch
+------------------------------------------------------------------
+
+
+
+
+
+
