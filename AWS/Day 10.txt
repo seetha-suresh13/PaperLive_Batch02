@@ -1,0 +1,127 @@
+											AWS - Day 10 - 19-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. IAM
+2. RDS
+
+=> What is IAM?
+IAM stands for Identity and Access Management
+
+=> Login types into the AWS Console;
+	1. Username and Password - Email and Password				- Root User (All kinds of permissions) 
+	2. Username and Password - IAM Username and IAM Password	- IAM User (Restrictions - Root user will provide restrictions)
+
+=> IAM is a global service
+=> IAM is FREE for lifelong
+
+=> Identity = Authentication
+	- To provide authentication to AWS account, identity is important
+=> To get access to AWS services, an user has to create AWS account using email and password
+=> AWS suggests to use only IAM User account to avoid any security breaches
+
+=> IAM Concepts
+	- IAM Users
+	- IAM Roles
+	- IAM Policies
+	- IAM Groups
+
+=> Project --- Dev, Test, Ops, DB Teams.... --- AWS Console Access
+
+=> IAM Users
+	- IAM User is the one which is created by Root User as per the required permissions
+	- IAM User can have the direct access to AWS Console or Root user can give Programmatic Access/CLI as well
+
+=> IAM Roles
+	- If you want to give temporary access, then we will choose IAM Roles
+	- Access Keys and Secret Access Keys - IAM User
+	- We need to attach policies
+
+=> IAM Policies
+	- Types of policies;
+		-- AWS Managed Policies
+		-- Customer Managed Policies
+	- All the IAM Policies will be available in JSON Format
+
+
+How to setup MFA for AWS Account?
+MFA - Multi Factor Authentication
+
+1. Setting up MFA for your AWS Account
+Playstore --- Google Authenticator --- Plus Symbol (bottom right side) --- Scan QR code
+
+2. IAM User
+
+
+
+
+DevOps001
+
+
+-----------------------------------------
+RDS
+-----------------------------------------
+RDS - Relational Database Service
+It is a region specific service
+
+Data is a collection of values or information
+Database is an organized collection of data
+
+3 types of data;
+1. Structured data
+	- Typically stored in tables with pre-defined structures which is known as SCHEMA
+	- Suitable for OLTP (transactions) and OLAP (analytics) workloads
+	- Commonly used in relational databases
+2. Semi-structured data
+	- organized data but not constrained to a fixed SCHEMA
+	- mostly available in JSON or XML (pom.xml - Maven) format
+	- Commonly used in non-relational databases
+3. Unstructured data
+	- it has unorganized data
+	- Commonly used in non-relational databases
+
+Can we take a backup of a DB?
+	- YES
+	- Multi AZ
+
+RDS Databases will have a separate security groups
+	- Before creating a database, it is recommended to create the SG of DB
+
+
+
+VPC - 3 days
+Route 53 - 1 day
+Cloud Watch & Cloud Trial & Cloud Front - 3 days
+Building a fault-tolerant wordpress site - 1 day
+ENI & AWS Lambda - 1 day
+AWS Code Suite Services - 1 day
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
