@@ -1,0 +1,142 @@
+											AWS - Day 11 - 20-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. Cloud Watch
+2. Cloud Trial
+3. Cloud Front
+4. Dynamo DB
+
+1. Cloud Watch
+=> CW is a resource monitoring service
+=> CT is an activity monitoring service
+
+=> CW is used to monitor the performance of AWS resources
+=> CW can monitor all AWS services
+=> 3 important features of CW
+	- Alarms
+	- Events
+	- Logs
+
+=> EC2 ---- App ---- Monitor EC2 ---- Host Level Metrics
+
+=> Metrics are nothing but CPU, Network, Memory, Status Check
+		- CW can only monitor these 4 metrics - These are the default metrics
+		- To monitor additional metrics (other than the above 4), we need to configure it as Custom Metric
+
+=> Types of monitoring using CW;
+	1. Basic monitoring	- Every 5 minutes data points will be available - FREE
+	2. Detailed monitoring	- Every minute data points - BILLABLE
+
+=> CW Alarms
+- In CW, we will create Alarms;
+	EC2 --- CPU > 50% --- Notification (SNS)
+- Alarms can send notifications and they also perform some actions such as Stop, Terminate, Reboot, Recover
+- Alarms cannot start the VMs
+- States of CW Alarms;
+	- In Alarm
+	- OK
+	- Insufficient data
+- CW Alarms are usually single metric
+- Composite Alarms - can monitor the states of multiple-alarms
+	Ex: AND or OR conditions
+
+=> CW Events
+- All events are stored in Event Bridge
+
+=> CW Logs
+- To publish the logs, we need an Agent. But to see the metrics, agent is not necessary.
+- For custom metrics, we need to install an Agent (DataDog)
+- All the AWS Services are managed by default and they are integrated with CW Logs
+	- VPC Flowlogs, CT Logs
+- CW logs can also be pushed to on-premise servers, but we need to install agent on on-premise servers
+- To publish logs, we need to create a log group. Inside log group we will have log streams
+
+
+2. Cloud Trial
+- If you are accessing AWS from any source such as Console, CLI, SDK, Programmatic, APIs, you will get all the details in CT Logs
+- CT is an activity monitoring service
+- Be default, CT is enabled for our AWS Account - No Cost
+- By default, only the last 90 days logs will be stored in Event History of CT
+	- To store more than 90 days, we need to create "Custom Trials" - Billable
+- Default created logs will be stored as Event History
+- Types of Events;
+	1. Management Events	- Launch VMs, Creating a bucket, Creating network, IAM User...
+	2. Data Events		- stopping the server, attaching a role, uploading an object, deleting an object, attaching policies...
+- 'Data Events' is supported to S3, Lambda, Dynamo DB
+- 'Management Events' is available for all AWS Services
+- Custom Trials can be created in 1 region or in multiple regions
+- CT is a region specific service. Lets say, you have created EC2 instance in Mumbai region, the CT logs about that instance will be there in Mumbai region only. But, it you are working with Global Services, the CT logs will be stored in N.Virginia region
+- To store the logs of CT, we can integrate CT with S3 Service or CW Logs
+- The logs are not real-time. Atleast 5-10 minutes delay will be there in publishing logs
+
+CW Logs
+------------------
+System Logs
+App Logs
+
+Agent --- /etc/awslogs ---- 2files --- modify (log directory) --- It will push the logs to CW Logs
+IAM Role --- CWFullAccess --- EC2
+
+
+3. Cloud Front
+https://docs.aws.amazon.com/cloudfront/latest/APIReference/Welcome.html
+
+
+4. Dynamo DB
+Serverless Services (Dynamo DB, AWS Lambda, AWS Code Build, AWS Code Pipeline...)
+Dynamo DB is developed by Amazon
+it is fully managed NoSQL DB service that supports key-value & document data structures
+It will reduce administrative burdens
+Also offers encryption atrest which eliminates the operational burden and complexity involved in protecting sensitive data
+
+Core Concepts;
+	Tables, items (rows), attributes (columns) 
+	Primary keys
+	Secondary indexes
+	Read and Write capacity
+
+Demo - Dynamo DB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
