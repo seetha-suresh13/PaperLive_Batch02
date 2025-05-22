@@ -1,0 +1,144 @@
+											AWS - Day 12 - 22-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+VPC Introduction
+Custom VPC
+
+VPC - Virtual Private Cloud
+VPC is a region specific service
+
+CIDR - Classless Inter Domain Routing
+	- It is a method for allocating the IP addresses
+	- Used in SG and AWS Networking in general
+CIDR consists of two components;
+	1. Base IP		- Represents an IP with in the range
+	2. Subnet Mask	- Defines how many bits can change in an IP
+
+Ex: 0.0.0.0/0 -----> All IPs
+Subnet mask allows part of underlying IP to get additional values (IPs) from the base IP
+
+3 types of IPs;
+	1. Public IP	- to login to the servers and to access the applications
+	2. Private IP	- within the same network if you want to communicate then we will use Private IP	
+	3. Elastic IP	- if you stop/restart the VM, the Public IP will get changed... if you dont want the Public IP to get changed, then we will 					attach Elastic IP
+
+
+All the IPs for our instances will be allocated within the below range of IPs
+0.0.0.0 to 255.255.255.255
+
+Types of IPs;
+	1. IPv4
+	2. IPv6
+
+IPv4 ---- It is made of 4 octets
+0.0.0.0
+123.124.0.0/32	---- 1 IP	---- 123.124.0.0
+123.124.0.0/31	---- 2 IPs	---- 123.124.0.0 & 123.124.0.1
+123.124.0.0/30	---- 4 IPs	---- 123.124.0.0 - 123.124.3
+....
+123.124.0.0/16	---- 65,536 IPs - 123.124.0.0 - 123.124.255.255
+
+/32 ---- No octet will change
+/24 ---- last octet will change
+/16 ---- last 2 octets will change
+/8 ---- last 3 octets will change
+/0 --- all octets will change
+
+The IANA (Internet Assigned Numbers Authority)
+Private IP can only allow certain values;
+	10.0.0.0 - 10.255.255.255 ----> used in big networks
+	172.16.0.0 - 172.31.255.255 ----> AWS default VPC range
+	192.168.0.0 - 192.168.255.255 ----> Home networks
+
+In IPv4 we have public ip and private ip
+All IPv6 addresses are public IPs
+
+
+Subnet mask decides how many IPs we will get within a specific subnet;
+	2^32-n
+
+		/24 ----> 2^32-24 = 2^8 = 256 IPs
+
+Scenario; 
+Requirement is 256 IPs
+10.0.0.0/24 --- 256 IPs but among these 256 IPs, 5 IPs will be reserved
+	10.0.0.0 --- Network Address
+	10.0.0.1 --- Reserved by AWS for VPC Router
+	10.0.0.2 --- Reserved by AWS for mapping to Amazon provided DNS
+	10.0.0.3 --- Reserved by AWS for future use
+	10.0.0.255 --- Network Broadcast Address
+
+Requirement is 29 IPs;
+	/27 ----32 IPs =32-5 = 27 IPs
+	/26 ---- 64 IPs = 64-5 = 59 IPs > 29 IPs
+
+
+VPC
+Region specific service
+At the time of creating an AWS Account, in every region we will have default VPC
+We can create upto 5 VPCs per region
+
+VPC Terminology;
+	1. VPC
+	2. Subnets (Public Subnet, Private Subnet)
+	3. IGW
+	4. NATGW
+	5. Route Tables
+
+NATGW;
+Network Address Translator
+DB - Private Subnet ---- To send the traffic ---- Route Table ---- NATGW
+NATGW will convert the Private IP to Public IP. This Public IP will be sent out through IGW
+The only job of NATGW is to give internet access to private subnet
+NATGW should be there in Public Subnet, because NATGW requires internet access, since all our private subnet traffic is routed to NATGW and NAT will go and take the traffic our through IGW
+NATGW is billable
+
+Route Tables;
+RT will divert the traffic to the required subnets
+	Public RT - all traffic is routed to IGW & public subnet is associated with Public RT
+	Private RT - Private RT traffic is routed to NATGW & private subnet is associated with Private RT
+
+VPC END POINTS ---- To access only AWS Services we will use VPC EP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
