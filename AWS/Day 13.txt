@@ -1,0 +1,26 @@
+											AWS - Day 13 - 23-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Amazon Web Services
+=======================================================================================================
+1. VPC Peering
+2. VPC Flowlogs
+
+
+AWS 3 Tier Architecture ----> https://github.com/KastroVKiran/3TierArchitectureApp.git
+
+VPC Flowlogs
+---------------------------------------
+Additional Charges are Applicable
+To know who is accessing the network
+FL can be enabled in 3 levels;
+	1. VPC Level
+	2. Subnet Level
+	3. ENIs (Elastic Network Interfaces) Level
+
+All the logs will be analyzed using Guard Duty (AWS Service).
+If we just enabled the Guard Duty and send the VPC Flowlogs to it, GD will do the analysis and thus it helps us to take necessary actions.
+Flowlogs can capture ACCEPTED, REJECTED, ALL METADATA
+All logs can be published to S3 bucket or Cloud Watch Logs
+To share the logs to 3rd party services (Splunk, Sumologic...), we will use Kinesis Firehouse
+Flowlogs will come every 10 minutes (default) and 1 minute
+We are going to receive; Source IP, Destination IP, Packet Size, Source Port, Destination Port, Call is accepted or rejected
