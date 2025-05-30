@@ -1,0 +1,144 @@
+											AWS - Day 17 - 30-05-2025
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Introduction to DevOps
+2. SDLC
+3. Phases of SDLC
+4. SDLC Methodologies
+5. Build and Deployment Process
+6. DevOps Tools
+
+7. Client Server Architecture
+8. 1 Tier, 2 Tier and 3 Tier Application Architecture
+9. Understanding Environments
+10. Maven - Introduction 
+
+------------------------------------------------------------------
+MAVEN
+------------------------------------------------------------------
+Maven is a build tool
+It is used to create the initial project folder structure to develop the source code of the application
+Based on the programming languages, we have different build tools;
+	1. Java		---- Maven**
+	2. Python		---- PyBuilder
+	3. .net		---- MS Build
+	4. Ruby		---- Rakes
+
+Source Code (.java)
+Maven is used for the projects which are developed by using Java Programming Language (JPL)
+Maven is also called as Java Build Tool
+Maven is an o/s software and it is free of cost
+
+Features of Maven
+--------------------------------
+1. Using maven we can create the initial project folder structure
+2. Using maven we can download the 'dependencies' that are required to develop the application
+
+Biryani -----> Chicken, Basmati Rice ----> Masala items....
+Hotstar -----> Java ----> Dependencies (Spring, SpringBoot...)
+
+How Maven will download the dependencies?
+ - In every folder structure of the java application, we will have a file which is known as "pom.xml" file.
+ - pom.xml file is used to configure the dependencies that are required for the project
+ - Project Object Model
+ - Whatever communication that we want to do with maven, we need to do it through pom.xml file only
+
+3. Using Maven we can compile the source code of the application
+	- conversion of .java files into .class files is known as compilation
+	- once we get the .class files we can execute the code and we will be able to see the output
+	- to see the output we need Java Virtual Machine
+
+.java ------> .class ------> JVM ------> Output
+
+4. When we have multiple .java files, we can package all the .java files. Once after packaging is made, we can directly compile them.
+	In real-time, using java we can develop two types of application
+		- Standalone application		----> .jar file (Java Archive)
+		- Web application			----> .war file (Web Archive)
+		- Enterprise application		----> .ear file (Enterprise Archive)
+
+		- .jar or .war or .ear are called as Artifacts
+		- Artifacts can be stored in Artifact Repository Tools
+			- Nexus*, JFrog
+
+Maven is developed by using JPL
+All java based projects require maven as a build tool
+Maven is developed by Apache organization
+
+Maven Terminology
+	- Archetype
+	- group ID
+	- Artifact ID
+	- Packaging
+
+These terminologies are included in the pom.xml file
+
+Maven Repositories;
+	- Local repo
+	- Central repo
+	- Remote repo
+
+Maven Goals;
+	- All maven goals will start with "mvn"
+
+1. Clean ---- It will delete the existing target folder (jar file or war file)
+			mvn clean
+
+2. Compile ---- It will compile the source code of the application (.java ----> .class)
+			mvn compile
+
+3. Test ---- it will perform the unit test execution of the source code'
+			mvn test
+
+4. Package ---- It will package the project as a jar or war file
+			mvn package
+When we execute the package goal, it will create the target folder, inside which we will have either jar file or war file
+
+5. Install ---- To install the project as a dependency in the local repo
+			mvn install
+
+We can also execute multiple goals at the same time
+	mvn clean compile
+	mvn clean package
+
+Note: All maven goals should be executed from the path wherever the pom.xml is available
+
+Task;
+
+1. Launch Amazon Linux 2 AMI
+2. Install Java
+	yum install git java-17-amazon-corretto -y
+	java --version
+3. Install Maven
+	yum install maven -y
+	mvn --version
+4. Install Git
+	yum install git -y
+	git --version
+5. git clone https://github.com/KastroVKiran/maven-app-1.git
+6. cd maven-app-1
+7. mvn clean
+8. mvn compile
+9. mvn package
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
