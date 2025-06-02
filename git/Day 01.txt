@@ -1,0 +1,69 @@
+https://git-scm.com/downloads/win (Download and Install Git)
+
+EC2 Instance
+yum install git -y (Linux)
+apt install git -y (Ubuntu)
+
+git --version (or) git -v
+
+git config --global user.name "Kastro"
+git config --global user.email "kastro@gmail.com"
+
+git config user.name
+git config user.email
+
+git config --list
+
+How to remove git credentials?
+In PC  Credentials Manager  Windows Credentials  Select the git related creds  remove
+
+git init
+touch Kastro.txt
+git status
+git add Kastro.txt
+git status
+git commit -m "<CommitMessage>" <FileName>
+git status
+
+git log
+git log --oneline
+git log --oneline -2
+
+git show
+git show <Commit-ID>
+
+git log -p -2
+git log --stat
+git shortlog
+git log --pretty=oneline
+
+git log --pretty=format:"%h-%an, %ar:%s"
+git log --oneline --author="Kastro"
+git blame <FileName>
+
+git diff <CommitID1>..<CommitID2> ----> to see the differences b/w any two commits
+git diff --staged ----> staging area and local repo area
+git diff HEAD ----> working area to repo area
+
+
+git diff will also show the changes between working tree and staging area
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
