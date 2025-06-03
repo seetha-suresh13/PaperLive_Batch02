@@ -1,0 +1,124 @@
+											Day 01 - Git Commands
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+git config --global user.name "Kastro"
+git config --global user.email "kastro@gmail.com"
+
+git config user.name
+git config user.email
+
+git config --list
+
+git init
+git status
+git add Kastro.txt
+git commit -m "<CommitMessage>" <FileName>
+
+git log
+git log --oneline
+git log --oneline -2
+
+git show
+git show <Commit-ID>
+
+git log -p -2
+git log --stat
+git shortlog
+git log --pretty=oneline
+
+git log --pretty=format:"%h-%an, %ar:%s"
+git log --oneline --author="Kastro"
+git blame <FileName>
+
+git diff <CommitID1>..<CommitID2> ----> to see the differences b/w any two commits
+git diff --staged ----> staging area and local repo area
+git diff HEAD ----> working area to repo area
+=======================================================================================================
+git commit --amend -m "first text file"
+git rebase -i HEAD~3
+
+GIT CHECKOUT
+Scenario 1
+git checkout command is used to switch to the oldest version of the same file from the latest version and vice versa
+git checkout 9793e22 -- kastro.txt
+
+Scenario 2
+To restore a deleted file
+git checkout HEAD -- kiran.txt
+
+GIT RESTORE
+Scenario 1
+git restore --source=0800286 demo.txt
+
+|Scenario 2
+To get back the file from staging area to working area (To untrack or unstage a staged file)
+git restore --staged demo.txt
+
+Scenario 3
+To restore a deleted file
+git restore demo.txt
+
+GIT RESET
+To uncommit the previous commit (If you have commited a file accidentally and want to uncommit or get the file back to local repo to staging
+To unstage the files which were mistakenly added to the staging area
+
+git reset --soft HEAD^
+git reset --hard bff9201
+
+The difference between soft reset and hard reset is, soft reset will uncommit and stage the changes, where as hard reset will uncommit and discard the changes
+
+0
+1 --- git stash apply <StashID>
+2
+
+GITHUB
+it is a place to store the source code of the application
+
+In GitHub we will create repositories
+Repository is nothing but a folder
+Repository consists of files
+
+Types of repos;
+	- Public repo		- the data inside the repo can be accessed by anyone
+	- Private repo		- the data inside the repo can only be accessed by you or by the collaborators you have added
+
+Every GitHub repo will have a unique repo URL
+
+To send the code to the GitHub repo;
+git push
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
