@@ -1,0 +1,62 @@
+GIT BRANCHES
+
+Whenever we initialize the empty git repo, we will have a default branch which is called as MASTER
+
+The main code which needs to be deployed into the servers will be kept in MASTER branch
+Master branch is also called as MAIN branch
+
+Note: Whenever we switch from branch1 to branch2, whatever files that are there in branch1 will automatically come into branch2
+
+GIT CLONE
+It will clone the complete repo to the local system
+
+GIT PULL vs GIT CLONE
+Git pull will get only the changes
+Git clone will get the complete code
+
+FORK
+Lets say someone is having a GitHub repo, i want to get that GitHub repo into my GitHub account
+
+Scenario 1:
+In the current git master branch i have 2 files, when i move to a new branch using checkout, whatever files available in master will also come to the new branch. right? If so, when i move to new branch from master, i dont want all the files to come into new branch. how to solve this?
+
+Solution: Create an Orphan Branch
+
+Steps to Create an Empty (Orphan) Branch
+# Step 1: Move to master (if you're not already)
+git checkout master
+
+# Step 2: Create an orphan branch
+git checkout --orphan new-branch-name
+
+# Step 3: Remove all files from the index (they are still in the working directory)
+git rm -rf .
+
+# Step 4 (Optional): Add new files, commit them
+echo "# Fresh Start" > README.md
+git add README.md
+git commit -m "Initial commit on empty branch"
+
+new-branch-name is now a clean branch with no history from master.
+You can add files as needed.
+You still have access to master and its files by switching back using git checkout master.
+
+Scenario 2: Start a new branch with only specific files
+You want to create a new branch from master but only bring in config.json and ignore the rest.
+Solution:
+Create 2 files. Add. Commit
+git checkout master
+git checkout -b config-only-branch
+git rm -rf .
+git checkout master -- config.json
+git add config.json
+git commit -m "Add only config.json"
+
+
+# Now the working directory shows only file1.txt, but the repo still has both
+
+.gitignore
+
+
+
+
