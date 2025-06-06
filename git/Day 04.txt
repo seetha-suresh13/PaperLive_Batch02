@@ -1,0 +1,72 @@
+GIT MERGE
+GIT REBASE
+MERGE CONFLICTS
+CHERRY PICK
+COLLABORATORS in GitHub 
+
+These two commands are used to merge the changes from one branch to another branch
+
+
+Master ----> 10 commits ----> git log ---> Only master branch commits can be seen. Movies branch commits cannot be seen while in movies
+Movies ----> 5 commits ----> git log ---> Only movies branch commits can be seen. Movies branch commits cannot be seen while in master
+
+
+Master ---> master1, master2 (Kastro)
+Feature ---> master1, feature1 (YOU)
+
+When using git merge, we will see what are the files that are merged into another branch
+When using git rebase, we will not see what are the files that are merged into another branch
+
+Git Merge Vs Git Rebase
+Merge will show the files, rebase will not show the files
+Merge will show the history, rebase will not show the history
+Merge will not show branches, rebase will show branches
+
+GIT MERGE LOGS
+-----------------------------
+$ git log
+commit 41508ed9c5ff8d546776aede7369d28b3f6f3d04 (HEAD -> feature)
+Merge: 19f973f 66a5fb5
+Author: Kastro <kastro@gmail.com>
+Date:   Fri Jun 6 20:18:18 2025 +0530
+
+    Merge branch 'master' into feature
+
+commit 66a5fb536862fa72dc81d7e6f37477a041326866 (master)
+Author: Kastro <kastro@gmail.com>
+Date:   Fri Jun 6 20:13:13 2025 +0530
+
+    master2 file
+
+commit 19f973f5f49ca1d981417f1dbfd2bc727c868c17
+Author: Kastro <kastro@gmail.com>
+Date:   Fri Jun 6 20:11:37 2025 +0530
+
+    feature1
+
+commit 3cda7cd42b64564536f85bb8b5d9423e681bc2c1
+Author: Kastro <kastro@gmail.com>
+Date:   Fri Jun 6 20:06:17 2025 +0530
+
+    master1 file
+
+------------------------------------
+MERGE CONFLICTS
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
