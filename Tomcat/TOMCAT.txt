@@ -1,0 +1,57 @@
+TOMCAT
+--------------------------------
+Tomcat is a webserver
+Apache, Nginx, JBoss...
+
+We have two ways of deploying an application;
+	1. Manual deployment
+	2. Automated deployment
+
+Code ----> Clone the code ----> Build the code (mvn clean package) ----> Artifact (jar file or war file or ear file) ----> Deploy in the server(s)
+																								- Manual
+																								- Automated
+
+For java applications, we will use Tomcat as webserver
+Tomcat is open source and freely available 
+By default, Tomcat will run on Port Number 8080
+
+Directory structure of tomcat;
+1. bin - binaries --- consists of the files which are related to start and stop of tomcat server
+					Linux	- .sh		- startup.sh, shutdown.sh
+					Windows	- .bat	- startup.bat, shutdown.bat
+
+2. conf - configurations --- to do configurations to the tomcat
+							username and password ---- tomcat-users.xml
+							change the port number ---- server.xml
+							access tomcat from any ip address --- context.xml
+
+3. webapps - web applications --- to deploy the web applications
+
+sudo amazon-linux-extras install java-openjdk11
+
+Editing the context.xml to give the Admin permissions
+------------------------------------------------------------------------------
+File path of context.xml:
+	cd tomcat/webapps/manager/META-INF/context.xml
+
+vi context.xml ----> Edit the allow tag -----> ".*" />
+
+Configuring the Users in Tomcat
+---------------------------------------------
+we need to edit the tomcat-users.xml to configure the users. 
+The "tomcat-users.xml" file is available in "conf" folder
+
+<role rolename="manager-gui" />
+<user username="tomcat" password="tomcat" roles="manager-gui" />
+<role rolename="admin-gui" />  
+<user username="admin" password="admin" roles="manager-gui,admin-gui"/>
+
+Click on 'Server Status' in the Tomcat Browser ----> Enter the username (admin) and password (admin)
+
+Repo URL: https://github.com/KastroVKiran/maven-web-app-kastro1.git
+
+
+
+
+
+
