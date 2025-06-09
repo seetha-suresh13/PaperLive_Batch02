@@ -1,0 +1,135 @@
+***************************************************************************************************************************
+													Jenkins
+***************************************************************************************************************************
+---------------------------------------------------------------------
+➤ What is CI & CD - Tools
+---------------------------------------------------------------------
+Manual Deployment: Git Checkout ---> Compile the code ---> Package the code ---> Artifact ---> Deploy into the servers
+
+CI & CD is an automation process to build and deploy the applications
+
+CI - Continuous Integration
+		Netflix ---> Version1 ---> Test the code ---> Build the code
+		Netflix ---> Version2 ---> Test the code ---> Build the code
+		Netflix ---> Version3 ---> Test the code ---> Build the code
+
+CI is a combination of Continuous Test and Continuous Build
+
+CD - Continuous Delivery
+		If you are deploying the code manually into the servers, then it is known as Continuous Delivery
+
+CD - Continuous Deployment
+		If you are deploying the code automatically into the servers, then it is known as Continuous Deployment
+
+CI & CD = Continuous Integration + Continuous Deployment
+
+CI & CD Tools available in the market ---> Jenkins, GitHub Actions, AWS Code Pipeline (Platform dependent), Circle CI
+
+---------------------------------------------------------------------
+➤ Stages in CI & CD
+---------------------------------------------------------------------
+Git Checkout		--- get the code from GitHub repo
+Build the code	--- to generate the artifacts
+Store the artifact	--- AWS-S3, Nexus, JFrog
+Code analysis		--- SonarQube
+Security tools		--- OWASP, Trivy, Docker Scout Image Analysis...
+Deploy			--- Tomcat/Docker/K8s cluster
+
+---------------------------------------------------------------------
+➤ Introduction to Jenkins
+---------------------------------------------------------------------
+Jenkins is a CI&CD tool
+Using Jenkins, we can automate the build and deployment process
+Jenkins is developed by using Java Programming Language (JPL)
+If you want to work with Jenkins, we need to install JAVA
+Jenkins will run on default port number which is 8080
+
+https://www.jenkins.io/
+---------------------------------------------------------------------
+➤ Installation of Jenkins
+---------------------------------------------------------------------
+Step 1: Launch Amazon Linux 2 AMI, t2.micro
+sudo -s   
+sudo yum update
+
+Step 2: Install Git, Java 17 and Maven in server
+yum install git java-17-amazon-corretto maven -y
+  
+Step 3: Jenkins installation
+Official documentation for commands 
+(Jenkins.io ---> download ---> RedHat) show in browser Jenkins.io ---> LTS Redhat (URL: https://www.jenkins.io/doc/book/installing/linux/#red-hat-centos)
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+sudo yum upgrade
+
+yum install jenkins -y
+
+systemctl start jenkins.service
+
+systemctl status jenkins.service  
+You should see "active (running)" in green colour 
+
+NOTE: chkconfig jenkins on
+The above command will make Jenkins service automatically restart itself whenever a server is stopped and restarted
+
+Step 4: Setup Jenkins Dashboard
+Setup Credentials
+Install suggested plugins
+Create admin user
+Access the jenkins dashboard
+
+---------------------------------------------------------------------
+➤ Jenkins Jobs
+---------------------------------------------------------------------
+Job is nothing but a task
+Types of Jenkins Jobs;
+	1. Freestyle project	--- we will configure the job information using the GUI of Jenkins
+	2. Pipeline			--- we will configure the job using scripts (Declarative, Groovy)
+	3. Multibranch	
+
+In freestyle jobs, we will have 6 options to configure;
+	General
+	SCM
+	Triggers
+	Environment
+	Build Steps
+	Post Build Actions
+	
+1. Freestyle Project - with simple steps	
+
+All the job information will be stored in default path i.e "/var/lib/jenkins/workspace"
+
+2. Freestyle Project - executing the shell commands
+
+3. Freestyle Project 
+Lets say i have a file in my EC2 Instance and i want Jenkins to run that file
+
+4. Freestyle Project
+Create a shell file with apache installation commands in any preferred location
+Execute the shell file using the Jenkins job
+Access the default page of apache on browser
+
+5. Freestyle Project - "This project is parameterized"
+Parameters are used to pass the variables in key-value pairs during the build processs
+
+String Parameter;
+Choice Parameter;
+
+6. Freestyle Project - "Throttle build"
+If i want to restrict the number of builds to happen in a specific time, then we will use "Throttle Build"
+
+7. Freestyle Project - "Integration of Public GitHub Repo"
+
+8. Freestyle Project - "Building the code available in GitHub repo"
+Invoke top level maven targets
+
+
+
+
+
+
+
