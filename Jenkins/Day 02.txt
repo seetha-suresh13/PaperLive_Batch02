@@ -1,0 +1,116 @@
+***************************************************************************************************************************
+													Jenkins
+***************************************************************************************************************************
+---------------------------------------------------------------------
+➤ 
+---------------------------------------------------------------------
+Step 1: Launch Amazon Linux 2 AMI, t2.micro
+sudo -s   
+sudo yum update
+
+Step 2: Install Git, Java 17 and Maven in server
+yum install git java-17-amazon-corretto maven -y
+  
+Step 3: Jenkins installation
+Official documentation for commands 
+(Jenkins.io ---> download ---> RedHat) show in browser Jenkins.io ---> LTS Redhat (URL: https://www.jenkins.io/doc/book/installing/linux/#red-hat-centos)
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+sudo yum upgrade
+
+yum install jenkins -y
+
+systemctl start jenkins.service
+
+systemctl status jenkins.service  
+You should see "active (running)" in green colour 
+
+NOTE: chkconfig jenkins on
+The above command will make Jenkins service automatically restart itself whenever a server is stopped and restarted
+
+
+9. Freestyle Project - Build Triggers - Build Periodically
+We will use cron syntax to schedule the job
+
+* * * * * ----> Every minute the job will get executed
+H/2 * * * *  ----> Every 30 minutes the job will get executed
+H * * * * ----> Every 60 minutes the job will get executed
+
+Build Periodically, the job gets executed automatically at the scheduled time.
+Build Periodically option will not bother about the changes in the code available in GitHub repo. It will keep on executing the job based on the cron syntax.
+
+The main problem with this option is, the storage capacity of the instance will be utilized unwantedly
+
+10. Freestyle Project - Build Triggers - POLL SCM
+We will use cron syntax to schedule the job
+* * * * *
+
+Poll SCM will look after the changes made in the GitHub repo, and if there is a change in the code, the job will be built automatically
+
+The main problem with this option is, we need to wait for 1 minute minimum
+
+11. Freestyle Project - Build Triggers - GitHub hook trigger for GITScm polling
+In real-time, we will prefer to work with GitHub Web Hooks
+
+12. Freestyle Project - Build Triggers - Build After Other Projects are Built (Upstream and Downstream Jobs)
+
+Job 1 ---- Manually Click Build Now ---- Success
+Job 2 ---- Trigger this job, if the Job 1 is successfully built
+Job 3 ---- Trigger this job, if the Job 2 is successfully built
+
+The execution of one job is dependent on the successful execution of previous job
+
+13. Freestyle Project - Build Triggers - Trigger job remotely
+JENKINS_URL/job/job01/build?token=TOKEN_NAME
+
+
+http://44.207.4.168:8080/job/job01/build?token=123456
+123456
+
+14. Freestyle Project - Automation of Build and Deployment Process
+
+
+15. Freestyle Project - Storing the Artifact
+S3 Bucket
+
+
+If Jenkins wants to communicate with the AWS Cloud, we will create IAM User and we will generate the access key and secret access key.
+Attach Administrator Access to the IAM User
+
+Install "S3 Publisher" plugin" --- Jenkins will go and communicate with S3 Bucket
+S3 Bucket --- 1st time --- 1st war
+		  --- 2nd time --- 2nd war
+
+15. Freestyle Project - Restoring the Job
+Install "Job Configuration History"
+
+Note:  Whatevver the jobs that were created after installing the plugin, only those jobs can be recovered
+
+
+Thin Backup plugin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
