@@ -1,0 +1,57 @@
+How to check which user Jenkins is running as
+ps -ef | grep jenkins
+
+You’ll see output like:
+jenkins   1234     1  0 12:00 ?        00:00:01 /usr/bin/java -jar /usr/share/jenkins/jenkins.war
+The first column (e.g., jenkins) is the Linux user Jenkins is running as.
+
+
+Note: Before writing stage 3, run the below commands in MobaXTerm
+sudo visudo
+
+Note: #Add the following line at the end of the file, assuming the Jenkins user as 'jenkins'
+jenkins ALL=(ALL) NOPASSWD: /bin/cp
+
+
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'maven3'
+    }
+
+    stages {
+        stage('Clone the Code') {
+            steps {
+                git 'https://github.com/KastroVKiran/Netflix-Pipeline-Project.git'
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                // Directly call Maven (Jenkins will inject MAVEN_HOME based on tools block)
+                sh 'mvn clean package -T 1C -DskipTests'
+            }
+        }
+
+        stage('Deploy Stage') {
+            steps {
+                script {
+                    // List WAR file
+                    sh 'ls -l target'
+                    // Deploy WAR to Tomcat
+                    sh 'sudo cp target/NETFLIX-1.2.2.war /root/apache-tomcat-10.1.42/webapps'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up after build...'
+            cleanWs()
+        }
+    }
+}
+
