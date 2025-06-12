@@ -1,0 +1,219 @@
+***************************************************************************************************************************
+													Jenkins
+***************************************************************************************************************************
+---------------------------------------------------------------------
+➤ Build Executor Status
+➤ Email Notification
+➤ Configure Private GitHub Repo in Jenkins
+➤ Changing the Port Number of Jenkins
+➤ Pipeline - Declarative Vs Scripted
+➤ Pipeline - Project 2
+---------------------------------------------------------------------
+Step 1: Launch Amazon Linux 2 AMI, t2.micro
+sudo -s   
+sudo yum update
+
+Step 2: Install Git, Java 17 and Maven in server
+yum install git java-17-amazon-corretto maven -y
+  
+Step 3: Jenkins installation
+Official documentation for commands 
+(Jenkins.io ---> download ---> RedHat) show in browser Jenkins.io ---> LTS Redhat (URL: https://www.jenkins.io/doc/book/installing/linux/#red-hat-centos)
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+sudo yum upgrade
+
+yum install jenkins -y
+
+systemctl start jenkins.service
+
+systemctl status jenkins.service  
+You should see "active (running)" in green colour 
+
+NOTE: chkconfig jenkins on
+The above command will make Jenkins service automatically restart itself whenever a server is stopped and restarted
+
+
+
+
+➤ Pipeline
+In Jenkins, we can create two types of jobs;
+	- Freestyle project		--- created and configured the job using Jenkins UI
+	- Pipeline			--- configured using SCRIPT
+Jenkins pipeline is a single platform where we are going to run the entire code as a Pipeline (PaaC)
+Pipeline as a Code
+Pipeline means the sequential execution of different stages available in a job
+
+Office -- 10.00 AM
+10.00 PM (Bed Time) ----> 07.00 AM (Wakeup Time) ----> 8.30 AM (Regular Activities) ----> 09.00 AM (Breakfast, Reading Paper..) ----> 9.20 AM (Start to Office) ----> 9.50 AM (Reaching the Office) ----> 10.00 AM (Cabin)
+
+Deploy the App
+Stage 1: Clone the Code ----> Stage 2: Build the Code ----> Stage 3: Deploy the Code ----> Access the App
+Step 1: Clone the Repo			Step 1: mvn clean			Step 1: Tomcat
+							Step 2: mvn compile		Step 2: Docker-Compose
+							Step 3: mvn package		Step 3: K8S Cluster
+
+Pipeline Stages in Real-time Scenarios;
+	Clone the Code
+	Build the Code
+	Store the Artifact (S3/Nexus/JFrog)
+	Code Quality Analysis (SonarQube)
+	Build Docker Image
+	Analysis of the Docker Image (Trivy/OWASP)
+	Run the Docker Container
+	Deploy using Docker-Compose
+	Deploy to K8s Cluster
+	Email Notification
+
+
+P	- pipeline
+A	- agent - any
+S	- Stage(s)
+S	- Step(s)
+
+Usually Jenkins pipeline script will be stored inside a file which is known as "Jenkinsfile"
+"Jenkisfile" will there in the GitHub repo
+DevOps Engineers will write the Jenkinsfile
+Jenkinsfile consists of all the configurations required to build and deploy the application
+
+There are two methods of writing a jenkinsfile;
+	- Declarative
+	- Scripted
+
+Declarative;
+	- Recent and advanced style of writing a pipeline script
+	- Predefined structure
+	- We can have multiple blocks
+	- Easy to read and manage
+	- It offers a feature to restart from a specific stage in a pipeline - its not recommended for production grade deployments
+
+Scripted;
+	- Groovy language
+	- Domain Specific Language (DSL)
+	- Programming - Flexibility
+	- Hard to read and manage
+	- It doesn't offer a feature to restart from specific stage
+	
+
+✅ Declarative Pipeline
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/example/repo.git'
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                sh 'scp target/*.jar user@server:/opt/app/'
+            }
+        }
+    }
+}
+
+
+✅ Scripted Pipeline
+node {
+    stage('Checkout Code') {
+        git 'https://github.com/example/repo.git'
+    }
+
+    stage('Build Project') {
+        sh 'mvn clean package'
+    }
+
+    stage('Deploy to Server') {
+        sh 'scp target/*.jar user@server:/opt/app/'
+    }
+}
+
+Pipeline Project 2 - Netflix App
+
+Note: If you want to see the stage by stage execution of a job, install "Pipeline: Stage View" or "Blue Ocean" plugin
+
+https://github.com/KastroVKiran/Netflix-Pipeline-Project.git
+
+
+<role rolename="manager-gui" />
+<user username="tomcat" password="tomcat" roles="manager-gui" />
+<role rolename="admin-gui" />  
+<role rolename="manager-script" />  
+<user username="admin" password="admin" roles="manager-gui,admin-gui,manager-script"/>
+
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'maven3'
+    }
+
+    stages {
+        stage('Clone the Code') {
+            steps {
+                git 'https://github.com/KastroVKiran/Netflix-Pipeline-Project.git'
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                // Directly call Maven (Jenkins will inject MAVEN_HOME based on tools block)
+                sh 'mvn clean package -T 1C -DskipTests'
+            }
+        }
+
+        stage('Deploy Stage') {
+            steps {
+                script {
+                    // List WAR file
+                    sh 'ls -l target'
+                    // Deploy WAR to Tomcat
+                    sh 'sudo cp target/NETFLIX-1.2.2.war /root/apache-tomcat-9.0.106/webapps'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up after build...'
+            cleanWs()
+        }
+    }
+}
+
+
+➤ Configure Private GitHub Repo in Jenkins
+Repo Types;
+	Public Repo	- No authentication is required
+	Private Repo	- Authentication is required
+
+To authenticate the private GitHub repo, we have two methods;
+	Personal Access Token (PAT)	--- preferred
+	SSH Keys				
+
+
+--------------------------------------------------------- 
+2️⃣ SonarQube
+--------------------------------------------------------- 
+Repo URL: https://github.com/KastroVKiran/SonarQube-Project-Kastro.git (Code along with text document for commands and setup)
+Video Link: https://youtu.be/opJAfDOCZuI?si=C58p0r025HM-1n9K
+---------------------------------------------------------
+3️⃣ Nexus
+---------------------------------------------------------
+Repo URL: https://github.com/KastroVKiran/Nexus-by-Kastro.git (For Text Document Setup and Commands)
+Repo URL: https://github.com/KastroVKiran/Nexus-Demo.git (For the application code)
+Video Link: https://youtu.be/opJAfDOCZuI?si=OIq-XZimpK8ap_go
