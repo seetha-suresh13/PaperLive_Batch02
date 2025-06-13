@@ -1,0 +1,112 @@
+***************************************************************************************************************************
+													Jenkins
+***************************************************************************************************************************
+---------------------------------------------------------------------
+➤ Jenkins Master & Slave - Project 3
+➤ RBAC
+➤ Installation of Jenkins on Ubuntu 24.04
+➤ Recovering Jenkins Password
+
+---------------------------------------------------------------------
+➤ Jenkins Architecture & Jenkins Master & Slave
+
+Jenkins follows a master and slave architecture
+Jenkins architecture majorly consists of Master and Slave components
+
+We can have only 1 master node and multiple slave nodes
+
+
+
+sudo -s   
+sudo yum update
+
+hostnamectl set-hostname MASTER
+sudo -i
+You will see root@MASTER in the beginning 
+
+To install jenkins using shell file;
+vi jenkins.sh ----> Paste the below commands in the file ---->
+#STEP-1: Installing Git and Maven
+yum install git maven -y
+
+#STEP-2: Repo Information (jenkins.io --> download -- > redhat)
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+#STEP-3: Download Java 17 and Jenkins
+sudo yum install java-17-amazon-corretto -y
+yum install jenkins -y
+
+#STEP-4: Start and check the JENKINS Status
+systemctl start jenkins.service
+systemctl status jenkins.service
+
+#STEP-5: Auto-Start Jenkins
+chkconfig jenkins on
+
+
+https://github.com/KastroVKiran/Hotstar-App.git
+
+
+➤ RBAC
+Roll Based Account Control
+
+
+************************************
+➤ Installation of Jenkins on Ubuntu 24.04
+************************************
+vi jenkins.sh ----> Paste the below commands ---->
+#!/bin/bash
+
+# Install OpenJDK 17 JRE Headless
+sudo apt install openjdk-17-jre-headless -y
+
+# Download Jenkins GPG key
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+# Add Jenkins repository to package manager sources
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Update package manager repositories
+sudo apt-get update
+
+# Install Jenkins
+sudo apt-get install jenkins -y
+
+----> esc ----> :wq ----> sudo chmod +x jenkins.sh ----> ./jenkins.sh ----> jenkins --version ----> Setup the Jenkins Dashboard
+
+➤ Recovering Jenkins Password
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------- 
+2️⃣ SonarQube
+--------------------------------------------------------- 
+Repo URL: https://github.com/KastroVKiran/SonarQube-Project-Kastro.git (Code along with text document for commands and setup)
+Video Link: https://youtu.be/opJAfDOCZuI?si=C58p0r025HM-1n9K
+---------------------------------------------------------
+3️⃣ Nexus
+---------------------------------------------------------
+Repo URL: https://github.com/KastroVKiran/Nexus-by-Kastro.git (For Text Document Setup and Commands)
+Repo URL: https://github.com/KastroVKiran/Nexus-Demo.git (For the application code)
+Video Link: https://youtu.be/opJAfDOCZuI?si=OIq-XZimpK8ap_go
