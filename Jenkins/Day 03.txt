@@ -210,7 +210,7 @@ To authenticate the private GitHub repo, we have two methods;
 2️⃣ SonarQube
 --------------------------------------------------------- 
 Repo URL: https://github.com/KastroVKiran/SonarQube-Project-Kastro.git (Code along with text document for commands and setup)
-Video Link: https://youtu.be/opJAfDOCZuI?si=C58p0r025HM-1n9K
+Video Link: https://youtu.be/ScdedztTaAU?si=6SE_L-cPgg6xng1d
 ---------------------------------------------------------
 3️⃣ Nexus
 ---------------------------------------------------------
