@@ -1,0 +1,44 @@
+
+GitHub (Hotstar App) ---- Jenkins (VM1 - micro) ---- Artifact ---- Nexus (VM2 - medium) ---- SonarQube (VM3 - medium) ---- Tomcat (VM4) - Project 4
+
+Project 1 - Freestyle
+Project 2 - Pipeline - Netflix 
+Project 3 - Pipeline - Hotstar
+Project 4 - Pipeline - Hotstar (integrating with Nexus and SonarQube)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+											DOCKER
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sudo yum install docker -y
+systemctl start docker
+docker -v
+docker info
+
+docker pull <ImageName>
+docker images
+docker run -it --name <ContainerName> <ImageName> ----- -it represents interactive mode, which means when this command is executed you will be there directly inside the container
+
+docker run -it -d --name <ContainerName> <ImageName>  ----- d represents detached mode, which mean when this command is executed you will not be there inside the container
+
+control+p+q ---- will safely make you come out of the container
+control+d ---- will kill all the things inside the container, which is not recommended approach
+
+docker ps ----> running containers
+docker ps -a -----> running containers and stopped containers
+
+docker start <ContainerName>
+docker stop <ContainerName>
+docker kill <ContainerName>
+
+To login to the container, 2 methods are there;
+1. docker attach <ContainerName> ----- will help you connect to the main process of the container
+2. docker exec -it <ContainerName> /bin/bash ---- will help you to connect to the new process where we can safely work
+
+The difference bw docker kill and stop is, kill will forcibly kills the container. All the process running inside the container will be stopped immediately.
+But docker stop will stop all the process smoothly and then the container will be stopped.
+If you don't want the container use kill. If you want to reuse the container, use stop
+
+docker rmi amazonlinux
+docker logs container1
+docker top container1
+docker stats container1
