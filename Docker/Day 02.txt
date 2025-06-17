@@ -1,0 +1,223 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+											DOCKER
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+sudo yum install docker -y
+systemctl start docker
+docker -v
+docker info
+---------------------------------------------------------------
+OS LEVEL VIRTUALIZATION
+---------------------------------------------------------------
+Virtualization is the process of using the resources in a better way
+OS ----> Files, Directories, Packages... ----> Backup of complete OS, then its called as OS Level Virtualization
+
+Dockerfile -----> Docker Image -----> Docker Container
+
+---------------------------------------------------------------
+Copying the content from VM to Container
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+Sharing the image
+---------------------------------------------------------------
+1. Pushing the image to the dockerhub 
+2. Convert the image to tar file ----> WinSCP ----> Copy to the local ----> Copy to another VM
+	docker save <image-name> > <ImageName>.tar
+
+
+---------------------------------------------------------------
+To remove the unused images and container
+---------------------------------------------------------------
+docker system prune -a
+
+Note: Unused images are called as DANGLING IMAGES
+
+---------------------------------------------------------------
+Renaming a container
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+Additional commands
+---------------------------------------------------------------
+docker kill $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker images -q
+docker rmi -f $(docker images -q)
+
+docker run -it -d --name container1 ubuntu
+
+--------------------------------------------------------------
+Dockerfile
+--------------------------------------------------------------
+Dockerfile consists of instructions to build a docker image
+In Dockerfile we will use DSL Keywords
+	Domain Specific Language
+Docker engine will process the instructions inside the dockerfile from top to bottom to build a docker image
+Whatever package you want to install inside the container, we will include everything inside the dockerfile
+
+Dockerfile components;
+FROM				--- it is used to get the base image
+RUN				--- it is used to execute Linux commands - during the image creation
+CMD
+ENTRYPOINT
+COPY
+ADD
+WORKDIR
+LABEL
+ENV
+ARGS
+EXPOSE
+USER
+VOLUMES
+NETWORKS
+
+--------------
+FROM
+--------------
+It indicates the base image to run our application
+On top of base image, we can create our own images
+FROM keywork is used to represent the base image to create custom image
+Every new base image should be written in a new line
+
+FROM amazonlinux 
+FROM ubuntu
+FROM MySQL
+FROM tomcat
+
+--------------
+RUN
+--------------
+It is used to execute the commands on top of base image
+RUN instructions will get executed while creating the docker image
+We can write multiple RUN instructions. 	
+	All these instructions will be processed by Docker Engine from top to bottom
+
+RUN mkdir kastro
+RUN touch kastro.txt
+RUN yum install git -y
+RUN git clone <Repo-URL>
+
+--------------
+CMD
+--------------
+It is also to execute the commands on top of base image 
+CMD instructions will get executed while creating the docker container
+Note: We can write multiple CMD instructions, but docker will process only the last CMD instruction. Here there is no use of writing multiple CMD instructions inside the same docker file
+
+CMD mkdir kastro
+CMD touch kastro.py
+CMD yum mvn install
+
+
+--------------
+COPY
+--------------
+It is used to copy the files or directories to a docker image while creating the image
+It is also used to copy the files from source location to the destination location
+
+COPY <Source-Location> <Destination-Location>
+
+--------------
+ADD
+--------------
+It is also used to copy the files from source location to destination location while create the image
+
+COPY vs ADD
+ADD command can download the files from remote location (web)
+ADD is also used to download the s/w or files from the URLs
+ADD command will extract tar files while copying to the image
+COPY is used to take the files from one location to another
+
+ADD <URL to download> <Destination Location>
+
+-----------------------
+WORKDIR
+-----------------------
+Using this keyword we can set the working directory for an image or for a container
+it is used to go inside a specific directory which is available inside the container
+
+FROM ubuntu
+RUN apt update -y
+RUN apt install git -y
+COPY kastro.java /tmp
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.106/bin/apache-tomcat-9.0.106.tar.gz /tmp
+WORKDIR /tmp
+
+----------------------
+LABEL
+----------------------
+it is used to assign the metadata for our image
+labels will written as key-value pairs
+
+----------------------
+ENV
+----------------------
+To assign values to a variable
+
+----------------------
+EXPOSE
+----------------------
+To access the application which is running inside the container, we will use EXPOSE keyword
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
