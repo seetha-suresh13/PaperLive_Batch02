@@ -1,0 +1,159 @@
+-----------------
+ENV
+-----------------
+used to set the environment variables
+will run inside the container
+will be passed as key-value pair
+Ex: ENV java /etc/jdk
+
+-----------------
+ARGS
+-----------------
+it is used to avoid the hardcoded values in the Dockerfile
+the ARGS will run outside of a container
+hardcoded values --- username, password, secretkey...
+MySQL ----- Username & Password
+
+Username Kastro
+Password Kastro123
+
+----------------------------
+ENTRYPOINT
+----------------------------
+ENTRYPOINT ["echo","This is Docker Day 02 Session"]
+
+---------------------
+USER
+---------------------
+We can set the username for an image or for a container
+
+USER <UserName>
+
+--------------------
+VOLUMES
+--------------------
+these are used for data storage
+or data mounting purposes
+If you want to store the data permanently then we will use Docker Volumes concept
+
+----------------------------------------
+DOCKER VOLUMES
+----------------------------------------
+Volume is nothing but storage
+It is nothing but a folder/directory inside a container
+Also called as Persistent Volumes
+We can share the docker volumes b/w containers
+Single volume can be attached to multiple containers, but at a time we can attach only one volume to one container
+We can create morethan 1 volume in a single container
+Volumes are stored on the host filesystem outside of the containers filesystem, which means they are not deleted when the container stops/deleted
+
+Approach 1 - Creating volume using Dockerfile
+
+Approach 2 - Sharing the existing volume to a new container
+
+Approach 3 - Creating volumes in imperative way
+
+Approach 4 - Create a volume on host machine and then we will attach to container
+
+Approach 5 - Creating an EBS volume and attaching to container
+
+Task 1: For the existing container, configure the CPU and Memory limits
+
+Task 2: Setup Tomcat using Docker
+
+--------------------------------------
+DOCKER COMPOSE
+--------------------------------------
+To automate the creation of multiple containers we will use Docker-Compose
+
+Netflix (123.145.223.99) --- Movies (123.145.223.99:70), Documentaries (123.145.223.99:71), Scifi (123.145.223.99:72), Romcom (123.145.223.99:73)
+
+Installation of Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+ls /usr/local/bin/
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+
+
+https://github.com/KastroVKiran/Kastro-Ecom-DC.git
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Let's say you want to build an image that prints a message, and the message is passed dynamically at build time using ARG.
+
+# Use official base image
+FROM alpine:latest # Uses the minimal Alpine Linux image (5MB)
+
+# Declare a build-time argument called USERNAME
+ARG USERNAME #Declares a build-time variable called USERNAME
+
+# Use the argument to set an environment variable
+ENV GREETING="Hello from $USERNAME" #Sets an environment variable using the build-time ARG
+
+# Run a shell command to print the greeting
+CMD echo "$GREETING"
+
+docker build -t greeting-image --build-arg USERNAME=Kastro .
+This builds the Docker image using the provided USERNAME=Kastro
+
+Run the Container
+docker run greeting-image
+
+Expected Output:
+Hello from Kastro
+
+Verify image build with docker history
+docker history greeting-image
+You’ll see layers and which commands were used
+
+
