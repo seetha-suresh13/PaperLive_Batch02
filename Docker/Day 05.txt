@@ -1,0 +1,97 @@
+Docker Swarm Project
+Docker Networks
+Docker Portrainer
+
+-------------------------------------------
+Docker Swarm - Concept & Project
+-------------------------------------------
+To manage the containers running for the same application we will use DOCKER SWARM
+Docker Swarm is an Orchestration platform
+Docker Swarm uses multiple host machines
+We will use Cluster in Docker Swarm
+	- Cluster means group of servers
+In a cluster we will have 2 main components;
+	1. Manager/ Leader Node
+	2. Worker Nodes
+If you want to bring Worker Nodes to join the cluster, we will initialize docker swarm
+
+3 VMs (Amazon Linux 2 AMI, t2.micro, 25 GB)
+	- Master
+	- Worker 1
+	- Worker 2
+
+Docker Swarm supports self-healing capability
+Docker Swarm doesnot support Auto Scaling - To overcome this we will KUBERNETES
+
+-----------------------------
+Docker Networks
+-----------------------------
+Docker networking is used to make communication between the multiple container that are running on same or different docker hosts
+
+Docker Networking Types;
+Bridge	- if 2 containers wants to communicate with each other which are there in the same docker host - preferred
+Overlay	- if 2 containers wants to communicate with each other which are there in the different docker hosts - preffered
+Host	- if you want to use host network of EC2 instance, then we will use HOST
+None	- if you dont want to expose any application running in the container
+
+172.17.0.2
+172.17.0.3
+
+---------------------------------
+Docker Portrainer
+---------------------------------
+It is a GUI for Docker
+
+Docker portrainer is a GUI for docker
+
+First setup docker-swarm cluster
+
+Connect to all the VMs
+Setup the connections with workers
+
+In Master ---> 
+curl -L https://downloads.portainer.io/ce2-16/portainer-agent-stack.yml -o portainer-agent-stack.yml
+docker stack deploy -c portainer-agent-stack.yml portainer
+
+docker ps
+
+public-ip of swarm master:9443/9000
+
+https://13.233.198.125:9443 (OR)
+http://13.233.198.125:9000
+
+Setup password
+Click on refresh
+You will see "Primary: up" ----> Click on it ----> Dashboard (Leftpane) ----> You can see all the details
+We can also create containers using GUI ---> Try it by going to containers (left pane)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DOCKER PROJECTS
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Deploying Microservices App (E-commerce)
+Deploying Microservices App (Book) (3 Tier)
+Docker-Compose --- NGINX Load Balancer (Custom Python App)
+Docker-Compose --- NGINX Load Balancer (Using Public Python App)
+Docker-Compose --- DevOps Exam App (3 Tier)
+Deployment of Swiggy App 
+	https://github.com/KastroVKiran/Terraform-Script-Swiggy-Kastro.git
+	https://github.com/KastroVKiran/DevOps-Project-Swiggy.git
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
