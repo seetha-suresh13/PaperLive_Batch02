@@ -1,0 +1,147 @@
+------------------------
+Day 02
+------------------------
+K8s cluster setup can be divided into 2 ways;
+1. Self managed k8s cluster
+	- Minikube* (Single node cluster) - for beginners
+	- Kubeadm (Multi node cluster) - manual maintenance - not preferred for production level deployments
+	- Kops* (Multi node cluster) - automation
+2. Managed k8s cluster
+	- AWS - EKS*
+	- Azure - AKS
+	- GCP - GKE
+	- IBM - IKE
+
+Creation of Minikube (Single Node Cluster)
+---------------------------------------------------------------
+=> Launch Ubuntu 24.04, t2.medium, 30 GB
+=> Connect to VM
+=> Lets install minikube, kubectl
+
+sudo -s ----> sudo apt update -y ----> hostnamectl set-hostname minikube ----> sudo -i ----> 
+vi minikube.sh ----> 
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install curl wget apt-transport-https -y
+sudo curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo mv minikube-linux-amd64 /usr/local/bin/minikube
+sudo chmod +x /usr/local/bin/minikube
+sudo minikube version
+sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+sudo echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+sudo minikube start --driver=docker --force
+
+Creation of PODS;
+	- Imperative
+	- Declarative
+
+Types of PODS;
+	- Single container pod
+	- Multi-container pod (Sidecar container)
+	- Init containers
+
+POD Lifecycle;
+	Pod lifecycle defines from the creation of the pods till the deletion of the pod
+	Pod lifecycle consists of 3 major events;
+		- Pending
+		- Running
+		- Success/Failed
+		- Unknown
+
+How the communication happens in a POD?
+	- Every pod will have an unique IP address
+	- PODS are ephemeral - if a pod dies, a new IP address will be created
+	- Each pod can communication with eachother using their internal IP address
+
+Creation of EKS Cluster in AWS Cloud
+EKS - Elastic Kubernetes Service
+It is a service which is managed by the AWS Cloud
+To work with EKS cluster, we need to install EKSCTL in the VM
+
+
+Launch VM --- Install kubectl, eksctl, awscli
+
+
+Creating EKS Cluster
+-----------------------------------------------------------
+=> Step - 1 : Create EKS Management Host in AWS
+Launch Ubuntu 24.04 VM (t2.micro, 30 GB)
+
+Connect to machine and install kubectl using below commands
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+=> Install AWS CLI latest version using below commands
+sudo apt install unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+=> Install eksctl using below commands
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+=> Step - 2 : Create IAM role & attach to EKS Management Host
+Create New Role using IAM service ( Select Usecase - ec2 )
+
+Add below permissions for the role
+
+IAM - fullaccess
+VPC - fullaccess
+EC2 - fullaccess
+CloudFormation - fullaccess
+Administrator - acces
+Enter Role Name (eksroleec2)
+
+Attach created role to EKS Management Host (Select EC2 => Click on Security => Modify IAM Role => attach IAM role we have created)
+
+=> Step - 3 : Create EKS Cluster using eksctl
+Syntax:
+N. Virgina:
+eksctl create cluster --name kastro-cluster --region us-east-1 --node-type t2.medium  --zones us-east-1a,us-east-1b
+
+Mumbai:
+eksctl create cluster --name kastro-cluster --region ap-south-1 --node-type t2.medium  --zones ap-south-1a,ap-south-1b
+
+By default the above commands create 2 worker nodes.
+If we need more worker nodes, we have to explicitly specify the number as shown below;
+You can use the --nodes flag, like:
+eksctl create cluster --name kastro-cluster --region us-east-1 --node-type t2.medium --zones us-east-1a,us-east-1b --nodes 3
+
+
+Note: Cluster creation will take 5 to 10 mins of time (we have to wait). After cluster created we can check nodes using below command.
+kubectl get nodes  
+
+Note: We should be able to see EKS cluster nodes here.**
+We are done with our Setup
+
+=> Step - 4 : After your practise, delete Cluster and other resources we have used in AWS Cloud to avoid billing
+eksctl delete cluster --name kastro-cluster --region us-east-1
+
+=> To know info about nodes;
+kubectl get nodes -o wide
+
+=> To get full details about a specific node;
+kubectl describe node <node-name>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
