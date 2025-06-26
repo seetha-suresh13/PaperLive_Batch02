@@ -1,0 +1,107 @@
+------------------------
+Day 03
+------------------------
+K8s Services
+------------------------
+To access the application that is running inside a pod, we will use K8s Services.
+POD Manifest File	---- Information related to the creation of pod
+SERVICE Manifest File ---- Information related to accessing the application which is there inside the pod
+
+Labels
+A label is a key-value pair which is attached to the k8s objects (Pod, deployment, service...)
+To identify and group all the pods belonging to the same application
+metadata:
+	labels:
+		app: my-app/Zomato/swiggy/hotstar
+		env: dev/test/prod
+
+Selector
+It is used to select the pods which have same labels
+A selector is used to filter the k8s objects based on their labels
+
+selector:
+	app: my-app/Zomato/swiggy/hotstar
+	env: dev/test/prod
+
+Ports:
+NodePort		- expose the service outside the cluster
+port			- port of a service (not mandatory)
+targetPort	- container port (inside the pod)
+
+K8s Service Types;
+1. Cluster IP			- to access the application within the cluster. will generate unique IP address (Static IP). clusterIP will not change if 							the pod is recreated
+2. NodePort			- it is used to access the application outside of the cluster. when we select the service type as nodeport, by default k8s 							assigns a port ranging between 30000-32767
+							nodePort: 31000
+3. LoadBalancer		- it is used to access the application outside of the cluster. k8s will create a load balancer in the aws cloud
+4. Headless Service		- clusterIP: none
+
+#!/bin/bash
+
+# Update package manager repositories
+sudo apt-get update
+
+# Install necessary dependencies
+sudo apt-get install -y ca-certificates curl
+
+# Create directory for Docker GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+
+# Download Docker's GPG key
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+
+# Ensure proper permissions for the key
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add Docker repository to Apt sources
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update package manager repositories
+sudo apt-get update
+
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
+
+
+Write the manifest file for Zomato App using Service Type as Load Balancer
+
+------------------------
+Namespaces
+------------------------
+If you want to create the k8s resources in an isolated environment we will use "namespace" concept
+dev --- dev ns
+test --- test ns
+devops --- devops ns
+
+-----------------------
+K8s Controllers
+-----------------------
+To provide self healing capability (High Availability) to our app we will use K8s controllers
+A controller in k8s will help us to run the required number of pods at any given time by maintaining HA
+
+Types of K8s controllers;
+	- ReplicationController
+	- ReplicaSet
+	- Deployment
+	- StatefulSet
+	- DaemonSet
+
+- ReplicationController 5 --- 4 --- 5
+It ensures that a specified number of pod replicas are running at any given time
+If a pod fails/deleted, RC will create a new pod in the place of delete pod
+RC will takecare of pod lifecycle
+Using RC we can scale up and scale down the number pods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
