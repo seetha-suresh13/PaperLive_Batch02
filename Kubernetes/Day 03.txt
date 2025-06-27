@@ -35,6 +35,8 @@ K8s Service Types;
 3. LoadBalancer		- it is used to access the application outside of the cluster. k8s will create a load balancer in the aws cloud
 4. Headless Service		- clusterIP: none
 
+Installation of Docker on ubuntu instance:
+==========================================
 #!/bin/bash
 
 # Update package manager repositories
