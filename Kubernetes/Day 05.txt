@@ -1,0 +1,356 @@
+1. Autoscaling
+2. Metrics Server
+3. Resource Quotas
+4. K8s Volumes
+
+---------------------------------
+1. Autoscaling
+---------------------------------
+Autoscaling in K8s refers to the automatic adjustment of the number of resources (pods/nodes) based on real-time metrics such as memory, CPU or custom metrics.
+To optimize the resource utilization and ensure better performance under varying workloads
+
+Types;
+HPA (Horizontal Pod Autoscaler)		No of Pods			CPU & Memory					Pods-new pods have same config
+VPA (Vertical Pod Autoscaler)			No of Pods			Historical & live usage				Pods-old pods deleted, new pods
+CA (Cluster Autoscaler)				No of Nodes			Pending pods, underused nodes	Cluster level
+
+To work with HPA, we need a server which is known as METRICS SERVER
+It is also called as HEAPSTER
+
+When we are working with self-managed k8s clusters, we need to install the metrics server
+When we are working with managed k8s clusters, metrics server will be available by default
+
+To delete metrics server ----> 
+kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+To install metrics server ----> 
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+Check if the Metrics Server is running
+kubectl get pods -n kube-system | grep metrics-server
+
+---------------------------------
+3. Resource Quotas
+---------------------------------
+A RQ in K8s limits the total amount of compute resources such as CPU, Memory, Object count, etc... that can be consumed by all the pods, containers, or obejcts within a namespace
+
+Requests		the minimum amount of a resource (CPU/Memory) that the container/pod is guaranteed to get
+Limits		the maximum amount of a resource the container is allowed to use
+
+Requests <= Limits
+
+By default K8s pods will run with no limitations
+
+resources:
+	requests:
+		memory: "250 Mi"
+		cpu: "500m"		----> 0.25 CPUs
+	limits:
+		memory: "512 Mi"
+		cpu: "500m"
+
+ADD-ONS
+EXAMPLE 2
+Create an NGINX Deployment
+📁 Create a file nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1  # Start with 1 pod
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: 200m     # Minimum guaranteed CPU
+          limits:
+            cpu: 500m     # Max CPU the pod can use
+        ports:
+        - containerPort: 80
+
+kubectl apply -f nginx-deployment.yaml
+kubectl get pods
+
+kubectl expose deployment nginx-deployment --name=nginx-service --port=80 --target-port=80 --type=ClusterIP
+
+kubectl get svc
+
+Create the HPA
+📁 Create a file nginx-hpa.yaml:
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 10  # Target: use 10% of assigned CPU
+
+🧠 This tells K8s: If the average CPU usage of all pods goes above 10%, add more pods (up to 5). If it’s below, remove pods.
+
+kubectl apply -f nginx-hpa.yaml
+
+kubectl get hpa
+
+Simulate CPU Load
+📁 Create a pod that hits your NGINX server continuously:
+Create load-generator.yaml:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: load-generator
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["/bin/sh"]
+    args:
+      - "-c"
+      - "while true; do wget -q -O- http://nginx-service.default.svc.cluster.local; done"
+
+kubectl apply -f load-generator.yaml
+🔁 This keeps requesting NGINX over and over, simulating user traffic → raises CPU usage
+
+Watch HPA in Action
+Run this in two terminals:
+watch kubectl get hpa
+
+watch kubectl get pods
+
+After 1–2 minutes:
+You’ll see CPU % increase in HPA output
+Pod count will scale from 1 → 2 → 3... (max 5)
+-----------------------------------------------------------
+1️⃣ Autoscaling in K8s - HPA
+-----------------------------------------------------------
+kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+Check if the Metrics Server is running
+kubectl get pods -n kube-system | grep metrics-server
+
+Check if metrics are being collected
+kubectl top nodes
+kubectl top pods
+
+kubectl top pods
+kubectl top nodes ----> You can see CPU and Memory utilization [1 CPU core = 1000 milli cores]
+
+kubectl top nodes
+
+vi zomato-deployment.yml ---->
+apiVersion: apps/v1
+kind: Deployment                                   # ---------- Specifies this is a Deployment
+metadata:
+  name: zomato-deployment                          # ---------- Name of the deployment
+  labels:
+    app: zomato                                     # ---------- Labels help group and identify this deployment
+spec:
+  replicas: 3                                       # ---------- Number of replicas (pods) to maintain
+  selector:
+    matchLabels:
+      app: zomato                                   # ---------- ReplicaSet matches pods with this label
+  template:
+    metadata:
+      labels:
+        app: zomato                                 # ---------- Pods created will carry this label
+    spec:
+      containers:
+        - name: zomato-container                    # ---------- Name of the container inside the pod
+          image: kastrov/zomato                     # ---------- Docker image from Docker Hub
+          ports:
+            - containerPort: 3000                   # ---------- Exposes port 3000 (adjust if needed)
+
+
+Lets do the autoscaling using yml ---->
+
+vi zomato-hpa.yml ---->
+apiVersion: autoscaling/v2                        # ---------- API version for advanced HPA (with metrics)
+kind: HorizontalPodAutoscaler                     # ---------- Specifies this is an HPA resource
+metadata:
+  name: zomato-hpa                                # ---------- Name of the HPA
+spec:
+  scaleTargetRef:                                 # ---------- Target resource to autoscale
+    apiVersion: apps/v1                           # ---------- API version of the target (Deployment)
+    kind: Deployment                              # ---------- We are scaling a Deployment
+    name: zomato-deployment                       # ---------- Name of your Zomato deployment
+  minReplicas: 2                                   # ---------- Minimum number of pods
+  maxReplicas: 10                                  # ---------- Maximum number of pods
+  metrics:
+    - type: Resource                               # ---------- Type of metric (CPU/Memory)
+      resource:
+        name: cpu                                  # ---------- CPU-based scaling
+        target:
+          type: Utilization                        # ---------- Based on average utilization %
+          averageUtilization: 20                   # ---------- Target average CPU utilization across pods
+
+
+stress --cpu 8 --io 4 --vm 2 --vm-bytes 128M --timeout 60s
+
+
+--------------
+kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+✅ Verify it's working:
+kubectl get deployment metrics-server -n kube-system
+kubectl top pods
+kubectl top nodes
+
+✅ Step 1: Create Deployment for kastrov/zomato
+📝 zomato-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zomato-deployment
+  labels:
+    app: zomato
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zomato
+  template:
+    metadata:
+      labels:
+        app: zomato
+    spec:
+      containers:
+      - name: zomato-container
+        image: kastrov/zomato
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        ports:
+        - containerPort: 3000
+
+kubectl apply -f zomato-deployment.yaml
+
+✅ Step 2: HPA for CPU-Based Scaling (Target: 20%)
+📝 hpa-cpu.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: zomato-hpa-cpu
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: zomato-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 20
+
+kubectl apply -f hpa-cpu.yaml
+
+✅ Step 3: HPA for Memory-Based Scaling (Target: 20%)
+📝 hpa-memory.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: zomato-hpa-memory
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: zomato-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 20
+
+kubectl delete hpa zomato-hpa-cpu    # If already applied
+kubectl apply -f hpa-memory.yaml
+
+✅ Step 4: Generate Load (CPU or Memory)
+🛠 Create a stress pod:
+kubectl run -i --tty load-generator --rm \
+  --image=busybox \
+  -- /bin/sh
+
+🧠 For Memory Load:
+Inside the busybox terminal:
+while true; do dd if=/dev/zero of=/dev/null bs=500K count=1000; done
+
+🧠 For CPU Load:
+while true; do wget -q -O- http://<pod-ip>:3000; done
+
+✅ Step 5: Watch Scaling in Action
+kubectl get hpa --watch
+kubectl get pods -l app=zomato -w
+
+✅ Cleanup
+kubectl delete -f zomato-deployment.yaml
+kubectl delete -f hpa-cpu.yaml
+kubectl delete -f hpa-memory.yaml
+
+The OOMKilled status means two of your pods were terminated by the system due to exceeding their memory limit.
+If the application (e.g., your kastrov/zomato image) uses more than 128Mi, the Kubelet kills the container to protect the node — this is called an Out Of Memory (OOM) kill.
+
+Mi stands for Mebibyte
+1 MiB = 2²⁰ bytes = 1,048,576 bytes
+
+Ki → Kibibyte (1024 bytes)
+Mi → Mebibyte (1024 KiB)
+Gi → Gibibyte (1024 MiB)
+Ti, Pi, Ei for higher scales
+
+🔍 Tip:
+Use Mi/Gi for memory
+Use m (millicores) for CPU (e.g., 250m = 0.25 CPU)
+
+
+
+---------------------------------
+4. K8s Volumes
+---------------------------------
+Stateful applications: even if I delete the pods and if the data is not lost, it is called stateful applications
+Stateless applications: if I delete a pod and if the data is lost, it is called stateless app
+
+PV & PVC
+PV - Persistent Volume
+PVC - Persistent Volume Claim - request for storage
+
+
+
+
+
+
+

@@ -1,0 +1,75 @@
+ReplicaSet:
+----------------------
+It is an advanced version of RC
+Ensures a specified number of pods are running at any given time
+RS uses advanced slectors like matchLabels or matchExpressions
+RC and RS is in selector.
+RC supports equality based selector
+RS supports set based selector
+
+RC
+selector:
+	app: nginx-app
+
+RS
+selector:
+	matchLabels:
+		app: nginx-app
+		version: v1.7
+		env: dev
+
+Deployments:
+--------------------------
+A deployment in k8s helps you to manage the desired state of pods. Automatically handles rolling updates without any downtime. Scale the applications in manually and automatically
+
+				RC			RS			Deployment
+Autohealing		Yes			Yes			Yes
+Rolling updates	     No		   No			Yes
+Multiple Versions  No		   No			Yes
+Real-time		     Not preferred  Preferred	Standard
+
+Types of deployment strategies;
+Rolling update*		Default - gradually replaces old pods with new ones - no downtime
+Recreate			Delete all old pods and then creates new pods
+Blue-Green*		Manually maintained. Green - New version, Blue - Old version
+Canary			Needs additional setup
+
+
+Version 1: kastrov/zomato
+Version 2: kastrov/swiggy
+
+DaemonSet & Node Selector
+-------------------
+DaemonSet: If you want to deploy only 1 pod on each worker node, then we will use DaemonSet
+
+Node Selector: If you want to deploy a pod on a specific worker node, then we will use NodeSelector
+
+A DaemonSet ensures exactly one pod to run on each worker node belonging to same application
+It is an old version of deployment and is not preferred in the real-time scenarios
+In real-time, DaemonSet is used for logs monitoring
+DaemonSet is used to setup ELK Stack
+
+Scenario 1 - One pod - One worker node
+
+Scenario 2 - Pod creation on specific worker node
+
+--------------------------------------------
+StatefulSet --- PENDING
+--------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
