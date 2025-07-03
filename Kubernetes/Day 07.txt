@@ -1,0 +1,251 @@
+1. K8s Volumes
+
+---------------------------------
+1. K8s Volumes
+---------------------------------
+Stateful applications: even if I delete the pods and if the data is not lost, it is called stateful applications
+Stateless applications: if I delete a pod and if the data is lost, it is called stateless app
+
+PV & PVC
+PV - Persistent Volume
+	EBS Volume - 10 GB
+PV is cluster-level storage provisioned by the K8s Admin.
+PV can be provisioned statically or dynamically
+PVs are like storage 'drives' which are available to be attached to a Pod/pods
+
+PVC - Persistent Volume Claim - request for storage
+A PVC is a user request for storage
+PVC is bound to a PV
+
+Access Modes;
+ReadWriteOnce (RWO)	One node can mount								AWS EBS								
+ReadOnlyMany (ROX)	Multiple nodes can mount							Shared read-only data
+ReadWriteMany (RWX)	Multiple nodes can read/write at the same time		EFS
+
+AWS EBS supports only RWO
+
+Reclaim Policy;
+RP determines what happens to the PV after the PVC is deleted
+Types;
+1. Retain*
+	persistentVolumeReclaimPolicy: Retain
+2. Delete
+	persistentVolumeReclaimPolicy: Delete
+3. Recycle
+	persistentVolumeReclaimPolicy: Recyle
+
+Storage Classes;
+A SC defines how volumes are dynamically provisioned
+CSI drivers
+By default AWS EKS supports only gp2 storage class. It is an SSD type
+
+Static Provisioning and Dynamic Provisioning;
+In SP, K8s admin will create PV in advance
+PVCs bind to pre-existing PVs
+
+In DP, PVCs automatically trigger the creation of a PV based on SC
+PVs are automatically created when PVCs request them
+Uses StorageClass to define the provisioner
+
+You cannot use dynamic EBS provisioning on EKS without CSI Driver
+
+OIDC - Open ID Connect
+vol-08f1c1c7b1046fb4b
+
+---------------------------------------
+K8s Volumes - Demo
+---------------------------------------
+Associate OIDC provider with your cluster
+eksctl utils associate-iam-oidc-provider \
+  --region us-east-1 \
+  --cluster kastro-cluster \
+  --approve
+This creates the OIDC identity provider for your EKS cluster and configures trust with IAM.
+
+Create the EBS CSI IAM Role
+eksctl create iamserviceaccount \
+  --name ebs-csi-controller-sa \
+  --namespace kube-system \
+  --cluster kastro-cluster \
+  --region us-east-1 \
+  --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+  --approve \
+  --role-name AmazonEKS_EBS_CSI_DriverRole
+
+Install the EBS CSI Addon
+eksctl create addon \
+  --name aws-ebs-csi-driver \
+  --cluster kastro-cluster \
+  --region us-east-1 \
+  --service-account-role-arn arn:aws:iam::957839002220:role/AmazonEKS_EBS_CSI_DriverRole \
+  --force
+
+kubectl get pods -n kube-system
+
+And verify pods like:
+ebs-csi-controller-xxxxx
+ebs-csi-node-xxxxx
+are running.
+
+Label the Node in us-east-1a for Scheduling
+kubectl get nodes -o wide
+
+Pick the node available in us-east-1a, then:
+kubectl label node <node-name> zone=us-east-1a
+
+📁 1. pv.yaml — Static PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nginx-pv
+spec:
+  capacity:
+    storage: 25Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  csi:
+    driver: ebs.csi.aws.com
+    volumeHandle: vol-08f1c1c7b1046fb4b   #volumeHandle must match your EBS Volume ID exactly.
+    fsType: ext4
+
+📁 2. pvc.yaml — PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 25Gi
+
+📁 3. configmap.yaml — Simple HTML Page
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: html-config
+data:
+  index.html: |
+    <html>
+      <head><title>Hello from Kastro</title></head>
+      <body>
+        <h1>Hello World - EBS Volume Persistence Demo</h1>
+      </body>
+    </html>
+
+📁 4. deploy.yaml — NGINX Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-ebs
+  template:
+    metadata:
+      labels:
+        app: nginx-ebs
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: zone
+                    operator: In
+                    values:
+                      - us-east-1a
+      containers:
+        - name: nginx
+          image: nginx:latest
+          volumeMounts:
+            - name: ebs-vol
+              mountPath: /usr/share/nginx/html
+            - name: html-vol
+              mountPath: /tmp/html
+              readOnly: true
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              cp /tmp/html/index.html /usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+      volumes:
+        - name: ebs-vol
+          persistentVolumeClaim:
+            claimName: nginx-pvc
+        - name: html-vol
+          configMap:
+            name: html-config
+
+📁 5. svc.yaml — Expose via LoadBalancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+spec:
+  selector:
+    app: nginx-ebs
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+
+kubectl apply -f pv.yaml
+kubectl apply -f pvc.yaml
+kubectl apply -f configmap.yaml
+kubectl apply -f deploy.yaml
+kubectl apply -f svc.yaml
+
+
+Enter the running pod
+kubectl exec -it $(kubectl get pod -l app=nginx-ebs -o jsonpath="{.items[0].metadata.name}") -- /bin/bash
+
+Overwrite the index.html in EBS-mounted path
+echo '<html><body><h1>Hello from Kastro. This is Updated App!</h1></body></html>' > /usr/share/nginx/html/index.html
+
+You can verify the updated content
+cat /usr/share/nginx/html/index.html
+
+Task;
+How to detach the volume from the existing pod and attach to a new pod (Deployment)
+
+
+===============
+RBAC
+===============
+Role Based Account Control
+It is used to regulate the access to k8s resources in a cluster
+
+Service Account (IRSA)
+Role
+Binding
+
+
+===============
+K8s Jobs
+===============
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
