@@ -1,0 +1,288 @@
+1. Environment Variables
+	- ConfigMaps
+	- Secrets
+2. Ingress Controller
+
+=====================
+1. Environment Variables
+=====================
+It is a way to pass configuration information to containers running in the pod
+We can pass variables in 2 ways;
+	ENV
+	ENVFROM
+To set the environment variables it include the env or envFrom field in the configuration file
+
+ENV - allows you to set the environment variables for a container using CLI/Command Prompt
+ENVFROM - here we will create a file and will call the variables from that file
+	ENVFROM has 2 types;
+		configmaps
+		secrets
+
+ConfigMaps
+It is used to store the data in key-value pairs that can be used by pods available in a cluster
+The data should be non-confidential info
+It doesnot provide security and encryption
+If you want to provide encryption for the data, we will use Secrets
+Limit of configmap file is 1 MB
+
+We have two types of pod states;
+1. Image pull backoff
+2. Crash loop backoff
+
+====================
+2. Ingress Controller
+====================
+We will setup the path based routing using INGRESS CONTROLLER
+
+App 1 - nginx ---> lb-url/nginx
+App 2 - httpd ---> lb-url/httpd
+
+app1/index.html file content ---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>App 1 - Ingress Demo</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #ff4e50, #f9d423);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      text-align: center;
+      animation: fadeIn 1s ease-in;
+    }
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+    p {
+      font-size: 1.5rem;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>🚀 App 1 Loaded</h1>
+    <p>This is the futuristic red version of App 1, powered by Kubernetes & Ingress on AWS EKS.</p>
+  </div>
+</body>
+</html>
+
+
+app2/index.html file content ---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>App 2 - Ingress Demo</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #56ab2f, #a8e063);
+      font-family: 'Helvetica Neue', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      text-align: center;
+      animation: slideUp 1s ease-in-out;
+    }
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 1.4rem;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>🌿 App 2 is Live</h1>
+    <p>This is App 2, deployed in Kubernetes and beautifully routed via Ingress.</p>
+  </div>
+</body>
+</html>
+
+
+app3/index.html file content ---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>App 3 - Ingress Demo</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #ffffffcc;
+      text-align: center;
+      animation: zoomIn 1s ease;
+    }
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.3rem;
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>🌊 Welcome to App 3</h1>
+    <p>This is App 3 — clean, responsive, and routed with Kubernetes Ingress on EKS.</p>
+  </div>
+</body>
+</html>
+
+
+vi ingress.yaml ----->
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /  # needed to strip path
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: aaf2ce9857abb44aba7babc87d7b3425-647700548.us-east-1.elb.amazonaws.com	#--->This has to be changed (kubectl get ing)
+      http:
+        paths:
+          - path: /app1
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-service
+                port:
+                  number: 80
+          - path: /app2
+            pathType: Prefix
+            backend:
+              service:
+                name: app2-service
+                port:
+                  number: 80
+          - path: /app3
+            pathType: Prefix
+            backend:
+              service:
+                name: app3-service
+                port:
+                  number: 80
+
+https://github.com/KastroVKiran/Book-My-Show.git
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+        - name: app1
+          image: kastrov/app1-image:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadta:
+  name: app1-service
+spec:
+  selector:
+    app: app1
+  ports:
+    - port: 80
+      targetPort: 80
+
+
+vi ingress.yml ---->
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: k8s-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"	# Disables HTTPS redirection; serves HTTP only
+    nginx.ingress.kubernetes.io/use-regex: "true"	# Enables regex usage in path rules
+    nginx.ingress.kubernetes.io/rewrite-target: /$2	# Rewrites the incoming path (based on regex groups) before sending to the backend
+spec:
+  ingressClassName: nginx	# This Ingress is handled by the ingress controller named "nginx"
+  rules:
+    - http:
+        paths:
+          - path: /nginx(/|$)(.*)	#Path Routing Rules	Path for NGINX 	# Regex: Matches /nginx, /nginx/, /nginx/abc, etc.
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nginx	# Forwards the request to the 'nginx' service
+                port:
+                  number: 80
+          - path: /httpd(/|$)(.*)	# Path for HTTPD
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: httpd	# Forwards to Apache HTTPD service
+                port:
+                  number: 80
+          - path: /(.*)	# Default fallback path	# Catch-all: any path not matching above two
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nginx	# Defaults to nginx if no match
+                port:
+                  number: 80
+
+
+
+
+Install ingress controller ---->
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
+
+
+
+
+
+
+
+
+
