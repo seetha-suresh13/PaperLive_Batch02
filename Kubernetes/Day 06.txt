@@ -57,8 +57,8 @@ K8s Volumes - Demo
 ---------------------------------------
 Associate OIDC provider with your cluster
 eksctl utils associate-iam-oidc-provider \
-  --region us-east-1 \
-  --cluster kastro-cluster \
+  --region ap-south-1 \
+  --cluster seetha-cluster \
   --approve
 This creates the OIDC identity provider for your EKS cluster and configures trust with IAM.
 
@@ -66,8 +66,8 @@ Create the EBS CSI IAM Role
 eksctl create iamserviceaccount \
   --name ebs-csi-controller-sa \
   --namespace kube-system \
-  --cluster kastro-cluster \
-  --region us-east-1 \
+  --cluster seetha-cluster \
+  --region ap-south-1b \
   --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
   --approve \
   --role-name AmazonEKS_EBS_CSI_DriverRole
@@ -75,9 +75,9 @@ eksctl create iamserviceaccount \
 Install the EBS CSI Addon
 eksctl create addon \
   --name aws-ebs-csi-driver \
-  --cluster kastro-cluster \
-  --region us-east-1 \
-  --service-account-role-arn arn:aws:iam::957839002220:role/AmazonEKS_EBS_CSI_DriverRole \
+  --cluster seetha-cluster \
+  --region ap-south-1 \
+  --service-account-role-arn arn:aws:iam::746669216728:role/AmazonEKS_EBS_CSI_DriverRole \
   --force
 
 kubectl get pods -n kube-system
@@ -91,7 +91,7 @@ Label the Node in us-east-1a for Scheduling
 kubectl get nodes -o wide
 
 Pick the node available in us-east-1a, then:
-kubectl label node <node-name> zone=us-east-1a
+kubectl label node <node-name> zone=ap-south-1b
 
 📁 1. pv.yaml — Static PersistentVolume
 apiVersion: v1
@@ -108,7 +108,7 @@ spec:
   storageClassName: manual
   csi:
     driver: ebs.csi.aws.com
-    volumeHandle: vol-08f1c1c7b1046fb4b   #volumeHandle must match your EBS Volume ID exactly.
+    volumeHandle:vol-02a713e958b03915e   #volumeHandle must match your EBS Volume ID exactly.
     fsType: ext4
 
 📁 2. pvc.yaml — PersistentVolumeClaim
@@ -161,7 +161,7 @@ spec:
                   - key: zone
                     operator: In
                     values:
-                      - us-east-1a
+                      - ap-south-1b
       containers:
         - name: nginx
           image: nginx:latest
