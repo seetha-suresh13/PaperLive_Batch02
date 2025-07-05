@@ -67,7 +67,7 @@ eksctl create iamserviceaccount \
   --name ebs-csi-controller-sa \
   --namespace kube-system \
   --cluster seetha-cluster \
-  --region ap-south-1b \
+  --region ap-south-1 \
   --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
   --approve \
   --role-name AmazonEKS_EBS_CSI_DriverRole
@@ -91,7 +91,7 @@ Label the Node in us-east-1a for Scheduling
 kubectl get nodes -o wide
 
 Pick the node available in us-east-1a, then:
-kubectl label node <node-name> zone=ap-south-1b
+kubectl label node <node-name> zone=ap-south-1a
 
 📁 1. pv.yaml — Static PersistentVolume
 apiVersion: v1
@@ -161,7 +161,7 @@ spec:
                   - key: zone
                     operator: In
                     values:
-                      - ap-south-1b
+                      - ap-south-1a
       containers:
         - name: nginx
           image: nginx:latest
