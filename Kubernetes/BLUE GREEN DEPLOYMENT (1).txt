@@ -1,0 +1,423 @@
+1. Blue Green Deployment
+2. HELM & ARGOCD
+
+
+BLUE GREEN DEPLOYMENT
+Version 1.0 ----> 2025 January ---- Current App (Blue)
+Version 1.1 -----> 2025 July ---- New App (Green)
+Version 1.1 -----> August ---- app stopped responding
+Version 1.0 ----> Blue
+
+Jenkins Pipeline ---- using parameters
+						Blue (v1), Green (v2)
+
+
+-----------------------------------------------------------------------------------------------
+Create EKS Management Host in AWS
+Launch Ubuntu 24.04 VM (t2.large, 30 GB)
+-----------------------------------------------------------------------------------------------
+=> Jenkins Installation
+#!/bin/bash
+
+# Install OpenJDK 17 JRE Headless
+sudo apt install openjdk-17-jre-headless -y
+
+# Download Jenkins GPG key
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+# Add Jenkins repository to package manager sources
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Update package manager repositories
+sudo apt-get update
+
+# Install Jenkins
+sudo apt-get install jenkins -y
+-----------------------------------------------------------------------------------------------
+=> Docker Installation
+#!/bin/bash
+
+# Update package manager repositories
+sudo apt-get update
+
+# Install necessary dependencies
+sudo apt-get install -y ca-certificates curl
+
+# Create directory for Docker GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+
+# Download Docker's GPG key
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+
+# Ensure proper permissions for the key
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add Docker repository to Apt sources
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update package manager repositories
+sudo apt-get update
+
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+-----------------------------------------------------------------------------------------------
+=> Install below plugins in Jenkins
+Eclipse Temurin Installer, Docker, Docker Commons, Docker Pipeline, Docker API, docker-build-step, Pipeline stage view, Kubernetes, Kubernetes CLI, Kubernetes Client API, Kubernetes Credentials, Config File Provider
+-----------------------------------------------------------------------------------------------
+=> Configure 'Docker' in Tools of Jenkins
+=> Configure Dockerhub credentials as `docker-creds'
+=> Configure aws credentials as `aws-eks-creds'
+-----------------------------------------------------------------------------------------------
+=>
+sudo usermod -aG docker jenkins
+sudo systemctl restart docker
+sudo systemctl restart jenkins
+-----------------------------------------------------------------------------------------------
+=> IAM User Creation
+Create IAM user (To create EKS Cluster, its not recommended to create using Root Account)
+
+Attach policies to the user 
+AmazonEC2FullAccess, AmazonEKS_CNI_Policy, AmazonEKSClusterPolicy, AmazonEKSWorkerNodePolicy, AWSCloudFormationFullAccess, IAMFullAccess
+
+Attach the below inline policy also for the same user
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "eks:*",
+            "Resource": "*"
+        }
+    ]
+}
+
+Create Access Keys for the user created
+With this we have created the IAM User with appropriate permissions to create the EKS Cluster
+
+=> Install AWS CLI (to interact with AWS Account)
+Install AWS CLI (to interact with AWS Account)
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+aws configure
+
+Configure aws by executing below command
+aws configure 
+
+=> Install KubeCTL (to interact with K8S)
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+=> Install EKS CTL (used to create EKS Cluster) 
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+=> Creation of EKS Cluster 
+eksctl create cluster --name=eks-kastro \
+                      --region=us-east-1 \
+                      --zones=us-east-1a,us-east-1b \
+                      --version=1.32 \
+                      --without-nodegroup
+
+=> 
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster eks-kastro \
+    --approve
+
+=> 
+eksctl create nodegroup --cluster=eks-kastro \
+                       --region=us-east-1 \
+                       --name=node2 \
+                       --node-type=t3.medium \
+                       --nodes=3 \
+                       --nodes-min=2 \
+                       --nodes-max=4 \
+                       --node-volume-size=20 \
+                       --ssh-access \
+                       --ssh-public-key=dockerservernvir \
+                       --managed \
+                       --asg-access \
+                       --external-dns-access \
+                       --full-ecr-access \
+                       --appmesh-access \
+                       --alb-ingress-access
+-----------------------------------------------------------------------------------------------
+=> Pipeline Script
+pipeline {
+    agent any 
+
+    parameters {
+        choice(name: 'DEPLOY_ENV', choices: ['blue', 'green'], description: 'Select deployment environment')
+    }
+
+    environment {
+        DOCKER_HUB_CREDS = credentials('docker-creds')
+        AWS_REGION = "us-east-1"
+        EKS_CLUSTER = "eks-kastro"
+        K8S_NAMESPACE = "blue-green-demo"
+        DOCKER_IMAGE = "kastrov/blue-green-demo:${params.DEPLOY_ENV}-${BUILD_NUMBER}"
+        GUNICORN_TIMEOUT = "120"
+        HEALTH_CHECK_TIMEOUT = "10" // Increased from 5
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                echo 'Checking out code...'
+                git 'https://github.com/KastroVKiran/blue-green-app.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo "Building Docker image for ${params.DEPLOY_ENV} environment..."
+                sh """
+                docker build \
+                    --build-arg DEPLOY_ENV=${params.DEPLOY_ENV} \
+                    --no-cache \
+                    -t ${DOCKER_IMAGE} .
+                """
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                echo 'Pushing Docker image to Docker Hub...'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh """
+                        docker login -u ${USERNAME} -p ${PASSWORD}
+                        docker push ${DOCKER_IMAGE}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Configure AWS EKS Access') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-eks-creds',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                    sh """
+                    aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                    aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                    aws configure set region ${AWS_REGION}
+                    aws eks --region ${AWS_REGION} update-kubeconfig --name ${EKS_CLUSTER}
+                    kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
+                    kubectl config set-context --current --namespace=${K8S_NAMESPACE}
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to EKS') {
+            steps {
+                script {
+                    try {
+                        echo "Deploying to ${params.DEPLOY_ENV} environment in EKS cluster..."
+                        sh """
+                        # Update the Kubernetes deployment manifest with proper timeouts
+                        cat k8s/${params.DEPLOY_ENV}-deployment.yaml | \
+                            sed "s|IMAGE_PLACEHOLDER|${DOCKER_IMAGE}|g" | \
+                            sed "s|TIMEOUT_VALUE|${HEALTH_CHECK_TIMEOUT}|g" > k8s/${params.DEPLOY_ENV}-deployment-updated.yaml
+                        
+                        # Apply the Kubernetes deployment
+                        kubectl apply -f k8s/${params.DEPLOY_ENV}-deployment-updated.yaml
+                        
+                        # Update service selector
+                        kubectl patch svc blue-green-service -p '{"spec":{"selector":{"app":"${params.DEPLOY_ENV}-app"}}}' || \
+                            kubectl apply -f k8s/service.yaml
+                        
+                        # Wait for deployment with extended timeout
+                        kubectl rollout status deployment/${params.DEPLOY_ENV}-deployment --timeout=600s
+                        
+                        # Verify pods are ready (simplified selector)
+                        kubectl wait --for=condition=ready pods -l app=${params.DEPLOY_ENV}-app --timeout=600s
+                        
+                        # Additional health check verification
+                        kubectl get pods -l app=${params.DEPLOY_ENV}-app -o wide
+                        """
+                    } catch (err) {
+                        echo 'Deployment failed, gathering debug information...'
+                        sh """
+                        echo '### Current deployments:'
+                        kubectl get deployments -o wide
+                        
+                        echo '### Failed pods:'
+                        kubectl get pods -l app=${params.DEPLOY_ENV}-app -o wide
+                        
+                        echo '### Pod logs:'
+                        kubectl logs -l app=${params.DEPLOY_ENV}-app --all-containers=true --tail=100
+                        
+                        echo '### Events:'
+                        kubectl get events --sort-by='.metadata.creationTimestamp' | grep -i -E 'error|fail|timeout' || true
+                        
+                        echo '### Describe deployment:'
+                        kubectl describe deployment ${params.DEPLOY_ENV}-deployment
+                        
+                        echo '### Describe service:'
+                        kubectl describe svc blue-green-service
+                        
+                        echo '### Network diagnostics:'
+                        kubectl get endpoints blue-green-service -o yaml
+                        """
+                        error("Deployment failed: ${err.getMessage()}")
+                    }
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo 'Verifying deployment...'
+                    def lbUrl = sh(script: "kubectl get svc blue-green-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+                    echo "Current deployments:"
+                    sh 'kubectl get deployments'
+                    echo "Service status:"
+                    sh 'kubectl get svc blue-green-service'
+                    echo "Pod status:"
+                    sh "kubectl get pods -l app=${params.DEPLOY_ENV}-app -o wide"
+                    echo "Load Balancer URL: http://${lbUrl}"
+                    
+                    // Health check with retries
+                    sh """
+                    for i in {1..5}; do
+                        if curl -sSf --max-time 10 http://${lbUrl}/health; then
+                            echo "Health check passed"
+                            exit 0
+                        fi
+                        echo "Health check attempt \$i failed, retrying..."
+                        sleep 10
+                    done
+                    echo "Health check failed after 5 attempts"
+                    exit 1
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                def lbUrl = sh(script: "kubectl get svc blue-green-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+                echo "Deployment successful! The ${params.DEPLOY_ENV} environment is now active."
+                echo "You can access the service at: http://${lbUrl}"
+                echo "Health check endpoint: http://${lbUrl}/health"
+            }
+        }
+        failure {
+            echo 'Deployment failed. Check the logs for details.'
+            echo 'Common issues:'
+            echo '1. Application failing health checks (/health endpoint)'
+            echo '2. Insufficient resources in EKS cluster'
+            echo '3. Docker image pull issues'
+            echo '4. Health check timeouts (current timeout: ${HEALTH_CHECK_TIMEOUT}s)'
+        }
+        always {
+            sh "docker rmi ${DOCKER_IMAGE} || true"
+            archiveArtifacts artifacts: 'k8s/*-updated.yaml', allowEmptyArchive: true
+            cleanWs()
+        }
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+amazon Linux (RedHat) ----> yum
+Ubuntu (Debian) ----> apt
+Python ----> pip
+
+K8s ----> HELM
+HELM is a package managers that consists of charts (helm charts)
+Chart is a collection of manifest files
+Helm charts are available in a repo which is known as helm repo (artifactshub.io)
+
+
+Jenkins - CI & CD Tools
+ArgoCD
+
+deployment
+ -- replicas = 3
+
+Install ArgoCD using HELM
+GitOps - ArgoCD
+
+------------------------------
+=> Install HELM
+------------------------------
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
+
+----------------------------------------------------
+=> Install ARGOCD using HELM
+----------------------------------------------------
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+In production, it is always suggested to create a custom namespace ----> kubectl create namespace argocd ----> Lets install argocd in the namespace 'argocd' ----> helm install argocd argo/argo-cd --namespace argocd ----> kubectl get all -n argocd ----> You will see multiple things which are running ----> Under 'services' you can see 'argo-cd server' and the type as ClusterIP. But to access outside of the cluster, we need Load Balancer. So lets edit this ClusterIP to LoadBalancer ----> For this i will use patch ----> 
+
+EXPOSE ARGOCD SERVER:
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}' ----> kubectl get all -n argocd ----> Now you can see the service called 'argo-cd server' changed to Load Balancer instead of ClusterIP ----> Copy the load balancer url ----> This is one way of getting the loadbalancer url. Another way is to install "jq" (J Query) ----> 
+
+yum install jq -y
+
+kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname'
+The above command will provide load balancer URL to access ARGO CD
+
+Access the argocd using teh above load balancer url ----> Username: admin, 
+
+TO GET ARGO CD PASSWORD:
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+----> Copy the password and provide in argo cd console ----> You will see the argo cd console ----> Here is where we will do the k8s deployments ----> Click on 'New App' ----> App Name: hdfcbank, Project name: default, Sync policy: Automatic, Source - Repo URL:https://github.com/KastroVKiran/argocd-swiggy.git (OR) https://github.com/KastroVKiran/argocd-zomato.git ----> Revision: HEAD, Path: ./ ----> Cluster URL: Select the one from dropdown, Namespace: default (If you want to deploy the pods in custom namespace, create that namespace and provide here) ----> Create ----> Click on the 'hdfc bank' ----> You can see the details of pods ----> kubectl get svc ----> Copy the load balancer url and access the app in new tab of browser ----> Lets say you want to change the image name in repo, you can change. Automatically you will see the modified app ----> Goto repo, change the image name, replicas count ----> Based on this everything will get updated in argocd ----> Goto Argocd ----> Click on 'sync' and 'synchronize' ----> Automatically the new app will get deployed. Here we dint used Jenkins but still we were able to automate the deployment process. 
+
+------------------------------------------------------------------------------------------------------------
+TASK: Write the argocd related yml file for BookMyShow Application
+------------------------------------------------------------------------------------------------------------
+
+Liveness Probe and Readiness Probe
+
+
+Ansible ( 4 days)
+Terraform ( 4 days)
+AWS CI & CD Project (1 day)
+Python (1 day)
+	(YouTube URL: )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
