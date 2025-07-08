@@ -122,21 +122,21 @@ sudo mv /tmp/eksctl /usr/local/bin
 eksctl version
 
 => Creation of EKS Cluster 
-eksctl create cluster --name=eks-kastro \
-                      --region=us-east-1 \
-                      --zones=us-east-1a,us-east-1b \
+eksctl create cluster --name=eks-seetha \
+                      --region=ap-south-1 \
+                      --zones=ap-south-1a,ap-south-1b \
                       --version=1.32 \
                       --without-nodegroup
 
 => 
 eksctl utils associate-iam-oidc-provider \
-    --region us-east-1 \
-    --cluster eks-kastro \
+    --region ap-south-1 \
+    --cluster eks-seetha \
     --approve
 
 => 
-eksctl create nodegroup --cluster=eks-kastro \
-                       --region=us-east-1 \
+eksctl create nodegroup --cluster=eks-seetha \
+                       --region=ap-south-1 \
                        --name=node2 \
                        --node-type=t3.medium \
                        --nodes=3 \
@@ -144,7 +144,7 @@ eksctl create nodegroup --cluster=eks-kastro \
                        --nodes-max=4 \
                        --node-volume-size=20 \
                        --ssh-access \
-                       --ssh-public-key=dockerservernvir \
+                       --ssh-public-key=linuxkeypair \
                        --managed \
                        --asg-access \
                        --external-dns-access \
@@ -162,10 +162,10 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDS = credentials('docker-creds')
-        AWS_REGION = "us-east-1"
-        EKS_CLUSTER = "eks-kastro"
+        AWS_REGION = "ap-south-1"
+        EKS_CLUSTER = "eks-seetha"
         K8S_NAMESPACE = "blue-green-demo"
-        DOCKER_IMAGE = "kastrov/blue-green-demo:${params.DEPLOY_ENV}-${BUILD_NUMBER}"
+        DOCKER_IMAGE = "seethasuresh/blue-green-demo:${params.DEPLOY_ENV}-${BUILD_NUMBER}"
         GUNICORN_TIMEOUT = "120"
         HEALTH_CHECK_TIMEOUT = "10" // Increased from 5
     }
